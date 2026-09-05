@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-finops.dev/schemas/waste-ledger.schema.json",
+  "title": "ZWCA Waste Ledger Event",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "event_id",
+    "timestamp",
+    "artifact_id",
+    "run_id",
+    "gate",
+    "decision",
+    "measurement_basis",
+    "candidate_tokens",
+    "admitted_tokens",
+    "transmitted_tokens",
+    "rejected_tokens",
+    "tier",
+    "status"
+  ],
+  "properties": {
+    "event_id": { "type": "string", "minLength": 1 },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "artifact_id": { "type": "string", "minLength": 1 },
+    "run_id": { "type": "string", "minLength": 1 },
+    "project_id": { "type": ["string", "null"] },
+    "operation": { "type": ["string", "null"] },
+    "platform": {
+      "type": ["string", "null"],
+      "enum": ["generic_code", "sql", "informatica_xml", "datastage", "ssis", null]
+    },
+    "gate": {
+      "type": "string",
+      "enum": ["admission", "compression", "dispatch", "audit", "quality"]
+    },
+    "decision": {
+      "type": "string",
+      "enum": ["deterministic", "admit", "compress", "dispatch", "reject", "escalate", "accept", "repair"]
+    },
+    "reason_code": { "type": ["string", "null"] },
+    "measurement_basis": {
+      "type": "string",
+      "enum": ["measured", "estimated", "counterfactual"]
+    },
+    "estimator": { "type": ["string", "null"] },
+    "candidate_tokens": { "type": "integer", "minimum": 0 },
+    "admitted_tokens": { "type": "integer", "minimum": 0 },
+    "transmitted_tokens": { "type": "integer", "minimum": 0 },
+    "rejected_tokens": { "type": "integer", "minimum": 0 },
+    "output_tokens": { "type": "integer", "minimum": 0, "default": 0 },
+    "cache_read_tokens": { "type": "integer", "minimum": 0, "default": 0 },
+    "cache_write_tokens": { "type": "integer", "minimum": 0, "default": 0 },
+    "complexity_score": { "type": ["number", "null"], "minimum": 0, "maximum": 100 },
+    "tier": {
+      "type": "string",
+      "enum": ["solar", "daylight", "horizon", "twilight", "starlight", "aurora", "unassigned"]
+    },
+    "model": { "type": ["string", "null"] },
+    "provider": { "type": ["string", "null"] },
+    "budget_input_tokens": { "type": ["integer", "null"], "minimum": 0 },
+    "budget_output_tokens": { "type": ["integer", "null"], "minimum": 0 },
+    "cost_usd": { "type": "number", "minimum": 0, "default": 0 },
+    "quality_passed": { "type": ["boolean", "null"] },
+    "value_status": {
+      "type": ["string", "null"],
+      "enum": ["accepted", "partially_accepted", "rejected", "unknown", null]
+    },
+    "status": {
+      "type": "string",
+      "enum": ["completed", "blocked", "failed", "pending_approval"]
+    },
+    "metadata": { "type": "object", "additionalProperties": true }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "measurement_basis": { "const": "estimated" } } },
+      "then": { "required": ["estimator"] }
+    },
+    {
+      "if": { "properties": { "decision": { "const": "deterministic" } } },
+      "then": {
+        "properties": {
+          "transmitted_tokens": { "const": 0 },
+          "tier": { "const": "solar" }
+        }
+      }
+    }
+  ]
+}

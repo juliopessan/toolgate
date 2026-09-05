@@ -1,0 +1,115 @@
+version: 1
+policy_name: zwca-default
+currency: USD
+
+scoring:
+  range: [0, 100]
+  required_features:
+    - ast_node_count
+    - dependency_depth
+    - transform_density
+    - branch_density
+    - external_system_count
+    - unsupported_construct_count
+  missing_score_action: reject
+
+controls:
+  require_artifact_id: true
+  require_context_manifest: true
+  require_ledger_event: true
+  unapproved_budget_overrun: deny
+  max_recompression_attempts: 2
+  max_repair_attempts: 1
+
+# Initial policy values. Calibrate using the Phase 0 baseline before production use.
+tiers:
+  - id: solar
+    score_min: 0
+    score_max: 15
+    execution_mode: deterministic
+    model_class: none
+    input_token_cap: 0
+    output_token_cap: 0
+    compression_target_pct: 100
+    approval_required: false
+    fallback: reject
+
+  - id: daylight
+    score_min: 16
+    score_max: 30
+    execution_mode: constrained_llm
+    model_class: small
+    input_token_cap: 4000
+    output_token_cap: 1200
+    compression_target_pct: 85
+    approval_required: false
+    fallback: deterministic_or_reject
+
+  - id: horizon
+    score_min: 31
+    score_max: 45
+    execution_mode: standard_llm
+    model_class: small_or_medium
+    input_token_cap: 8000
+    output_token_cap: 2400
+    compression_target_pct: 82
+    approval_required: false
+    fallback: recompress
+
+  - id: twilight
+    score_min: 46
+    score_max: 60
+    execution_mode: reasoning_llm
+    model_class: medium
+    input_token_cap: 16000
+    output_token_cap: 4800
+    compression_target_pct: 78
+    approval_required: false
+    fallback: recompress_then_escalate
+
+  - id: starlight
+    score_min: 61
+    score_max: 80
+    execution_mode: advanced_reasoning
+    model_class: medium_or_large
+    input_token_cap: 32000
+    output_token_cap: 8000
+    compression_target_pct: 72
+    approval_required: true
+    fallback: escalate
+
+  - id: aurora
+    score_min: 81
+    score_max: 100
+    execution_mode: frontier_reasoning
+    model_class: frontier
+    input_token_cap: 64000
+    output_token_cap: 12000
+    compression_target_pct: 65
+    approval_required: true
+    fallback: human_review
+
+# Default, domain-agnostic profiles. Every consuming project gets these
+# out of the box; `generic_code` is the fallback when no artifact-specific
+# profile matches.
+platform_profiles:
+  generic_code:
+    context_strategy: ast_symbols_dependencies
+    compression_floor_pct: 75
+  sql:
+    context_strategy: schema_symbols_query_graph
+    compression_floor_pct: 82
+
+  # Example domain extension — legacy data-migration pilot (Informatica,
+  # DataStage, SSIS). Not required by the core runtime; kept here as a
+  # worked example of adding project-specific profiles. See
+  # docs/EXTENDING.md before copying this pattern into a new project.
+  informatica_xml:
+    context_strategy: workflow_graph_and_expression_nodes
+    compression_floor_pct: 68
+  datastage:
+    context_strategy: job_graph_and_stage_properties
+    compression_floor_pct: 70
+  ssis:
+    context_strategy: package_control_and_data_flow_graph
+    compression_floor_pct: 72

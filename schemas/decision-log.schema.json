@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-finops.dev/schemas/decision-log.schema.json",
+  "title": "ZWCA Decision Log Entry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["decision_id", "occurred_at", "project_id", "decision", "reason", "status"],
+  "properties": {
+    "decision_id": { "type": "string", "minLength": 1 },
+    "occurred_at": { "type": "string", "format": "date-time" },
+    "project_id": { "type": "string", "minLength": 1 },
+    "session_id": { "type": ["string", "null"] },
+    "artifact_id": { "type": ["string", "null"] },
+    "decision": { "type": "string", "minLength": 1 },
+    "reason": { "type": "string", "minLength": 1 },
+    "decided_by": { "type": ["string", "null"] },
+    "status": {
+      "type": "string",
+      "enum": ["proposed", "approved", "rejected", "superseded"]
+    },
+    "supersedes_decision_id": { "type": ["string", "null"] },
+    "tags": { "type": "array", "items": { "type": "string" } },
+    "metadata": { "type": "object", "additionalProperties": true }
+  }
+}

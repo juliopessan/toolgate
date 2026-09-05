@@ -1,0 +1,274 @@
+{
+  "generated_at": "2026-09-02 14:06:44 UTC",
+  "pricing_assumption_usd_per_mtok_input": 3.0,
+  "corpora": {
+    "token-goat": {
+      "typescript": {
+        "files": 209,
+        "tokens_full": 1243684,
+        "tokens_skeleton": 128224,
+        "reduction_pct": 89.7,
+        "median_file_reduction_pct": 88.7,
+        "symbols_indexed": 3404
+      }
+    },
+    "semantica": {
+      "python": {
+        "files": 331,
+        "tokens_full": 2065070,
+        "tokens_skeleton": 312484,
+        "reduction_pct": 84.9,
+        "median_file_reduction_pct": 84.2,
+        "symbols_indexed": 5726
+      },
+      "markdown": {
+        "files": 22,
+        "tokens_full": 194787,
+        "tokens_skeleton": 16812,
+        "reduction_pct": 91.4,
+        "median_file_reduction_pct": 91.1,
+        "symbols_indexed": 1402
+      }
+    }
+  },
+  "budget_adherence": [
+    {
+      "budget": 200,
+      "packed": 107,
+      "utilisation_pct": 53.5,
+      "sections": 2,
+      "dropped": 13,
+      "within_budget": true
+    },
+    {
+      "budget": 500,
+      "packed": 463,
+      "utilisation_pct": 92.6,
+      "sections": 4,
+      "dropped": 11,
+      "within_budget": true
+    },
+    {
+      "budget": 1000,
+      "packed": 978,
+      "utilisation_pct": 97.8,
+      "sections": 6,
+      "dropped": 9,
+      "within_budget": true
+    },
+    {
+      "budget": 2000,
+      "packed": 1904,
+      "utilisation_pct": 95.2,
+      "sections": 8,
+      "dropped": 7,
+      "within_budget": true
+    },
+    {
+      "budget": 4000,
+      "packed": 3754,
+      "utilisation_pct": 93.8,
+      "sections": 12,
+      "dropped": 3,
+      "within_budget": true
+    },
+    {
+      "budget": 8000,
+      "packed": 5161,
+      "utilisation_pct": 64.5,
+      "sections": 15,
+      "dropped": 0,
+      "within_budget": true
+    }
+  ],
+  "retrieval": {
+    "queries": 8,
+    "precision_at_1_pct": 75.0,
+    "precision_at_3_pct": 87.5,
+    "details": [
+      {
+        "query": "how is the remaining budget divided between competing lanes",
+        "expected": "headroom.py",
+        "returned": [
+          "headroom.py",
+          "pack.py",
+          "headroom.py"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true
+      },
+      {
+        "query": "split camelCase identifiers when tokenising for search",
+        "expected": "semantic.py",
+        "returned": [
+          "semantic.py",
+          "semantic.py",
+          "semantic.py"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true
+      },
+      {
+        "query": "truncate output keeping the end of a log",
+        "expected": "tokens.py",
+        "returned": [
+          "tokens.py",
+          "astx.py",
+          "tokens.py"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true
+      },
+      {
+        "query": "extract declarations from a source file",
+        "expected": "astx.py",
+        "returned": [
+          "astx.py",
+          "astx.py",
+          "astx.py"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true
+      },
+      {
+        "query": "assemble a cited context under a token budget",
+        "expected": "pack.py",
+        "returned": [
+          "__init__.py",
+          "pack.py",
+          "cli.py"
+        ],
+        "hit_at_1": false,
+        "hit_at_3": true
+      },
+      {
+        "query": "split a file into structure aligned pieces",
+        "expected": "chunking.py",
+        "returned": [
+          "chunking.py",
+          "semantic.py",
+          "astx.py"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true
+      },
+      {
+        "query": "advise an agent instead of blocking its tool call",
+        "expected": "hooks.py",
+        "returned": [
+          "hooks.py",
+          "hooks.py",
+          "hooks.py"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true
+      },
+      {
+        "query": "parse command line arguments and subcommands",
+        "expected": "cli.py",
+        "returned": [
+          "astx.py",
+          "astx.py",
+          "chunking.py"
+        ],
+        "hit_at_1": false,
+        "hit_at_3": false
+      }
+    ]
+  },
+  "performance": {
+    "skeleton_ms_per_file": 1.42,
+    "index_build_s": 0.033,
+    "chunks_indexed": 204,
+    "chunks_per_second": 6209.2,
+    "search_p50_ms": 0.05,
+    "search_max_ms": 0.07,
+    "cold_start_dependencies": 0
+  },
+  "narrow_reads": [
+    {
+      "file": "astx.py",
+      "symbol": "_PATTERNS",
+      "tokens_full_file": 7265,
+      "tokens_one_symbol": 1318,
+      "reduction_pct": 81.9
+    },
+    {
+      "file": "pack.py",
+      "symbol": "pack_hits",
+      "tokens_full_file": 5271,
+      "tokens_one_symbol": 1282,
+      "reduction_pct": 75.7
+    },
+    {
+      "file": "semantic.py",
+      "symbol": "LexicalIndex",
+      "tokens_full_file": 3746,
+      "tokens_one_symbol": 912,
+      "reduction_pct": 75.7
+    },
+    {
+      "file": "hooks.py",
+      "symbol": "suggest_for_read",
+      "tokens_full_file": 2766,
+      "tokens_one_symbol": 766,
+      "reduction_pct": 72.3
+    },
+    {
+      "file": "cli.py",
+      "symbol": "build_parser",
+      "tokens_full_file": 6239,
+      "tokens_one_symbol": 1756,
+      "reduction_pct": 71.9
+    },
+    {
+      "file": "tokens.py",
+      "symbol": "trim_to_budget",
+      "tokens_full_file": 2407,
+      "tokens_one_symbol": 727,
+      "reduction_pct": 69.8
+    },
+    {
+      "file": "chunking.py",
+      "symbol": "chunk_source",
+      "tokens_full_file": 2121,
+      "tokens_one_symbol": 1214,
+      "reduction_pct": 42.8
+    },
+    {
+      "file": "store.py",
+      "symbol": "Store",
+      "tokens_full_file": 7941,
+      "tokens_one_symbol": 5426,
+      "reduction_pct": 31.7
+    },
+    {
+      "file": "headroom.py",
+      "symbol": "Headroom",
+      "tokens_full_file": 3119,
+      "tokens_one_symbol": 2472,
+      "reduction_pct": 20.7
+    }
+  ],
+  "quality": {
+    "tests_total": 188,
+    "tests_passed": 188,
+    "pass_rate_pct": 100.0,
+    "suite_runtime_s": 0.68,
+    "source_lines": 3536,
+    "test_lines": 1701,
+    "test_to_source_ratio": 0.48,
+    "runtime_dependencies": 0,
+    "modules": 11
+  },
+  "aggregate": {
+    "files": 562,
+    "tokens_full": 3503541,
+    "tokens_skeleton": 457520,
+    "tokens_saved": 3046021,
+    "reduction_pct": 86.9,
+    "usd_full": 10.51,
+    "usd_skeleton": 1.37,
+    "usd_saved": 9.14
+  }
+}
