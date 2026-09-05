@@ -20,8 +20,8 @@ Rode lint + testes do projeto (`npm run lint && npm test`, ou `pytest`). Só pro
 Registre/promova o agente no store:
 ```bash
 python3 - <<'EOF'
-import sys; sys.path.insert(0, "${CLAUDE_PLUGIN_ROOT}/store")
-import db
+import sys; sys.path.insert(0, "${CLAUDE_PLUGIN_ROOT}/src")
+from tollgate.governance.store import db
 conn = db.connect()
 conn.execute("""INSERT INTO agent_registry (name, project, model, status, owner, notes)
   VALUES (?,?,?,?,?,?)

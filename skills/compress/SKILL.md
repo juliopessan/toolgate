@@ -1,9 +1,26 @@
 ---
 name: compress
-description: Ativa compressão de contexto via Headroom (wrap/proxy/MCP) no projeto atual e registra a economia de tokens no store FinOps. Use quando o usuário pedir para comprimir contexto, reduzir tokens de sessão ou "ativar headroom".
+description: Comprime contexto (built-in ou via Headroom) e registra a economia de tokens no store FinOps. Use quando o usuário pedir para comprimir contexto, reduzir tokens de sessão ou "ativar headroom".
 ---
 
-# Compress (Headroom)
+# Compress
+
+## Opção padrão — zero dependência, já embutida
+
+`tollgate.context` já vem com compressão real, sem instalar nada:
+
+- `tollgate.context.tokens.trim_to_budget(text, budget_tokens, keep="both")` —
+  corta por linha inteira, mantém início+fim, sempre diz o que descartou.
+  É o que `tollgate.governance.runtime.compressors.ContextCompressor` usa
+  por baixo dos panos no Guardian.
+- `tollgate.context.pack.pack_query(query, index, budget=N, headroom=h)` —
+  quando dá pra usar uma query para escolher o que entra, em vez de só
+  cortar o que já foi escolhido.
+
+Prefira isso ao Headroom abaixo quando o projeto já é Python e não precisa
+de wrap/proxy fora do processo.
+
+## Headroom — para wrap/proxy fora do processo, ou fora de Python
 
 Headroom (https://github.com/chopratejas/headroom) comprime 60–95% dos tokens que o agente lê. Três modos, em ordem de preferência:
 
@@ -25,8 +42,8 @@ Após uma sessão comprimida, colete `headroom stats` (ou a saída do wrap) e re
 
 ```bash
 python3 - <<'EOF'
-import sys; sys.path.insert(0, "${CLAUDE_PLUGIN_ROOT}/store")
-import db
+import sys; sys.path.insert(0, "${CLAUDE_PLUGIN_ROOT}/src")
+from tollgate.governance.store import db
 conn = db.connect()
 pricing = db.load_pricing()
 tokens_saved = TOKENS   # da saída do headroom

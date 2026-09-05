@@ -7,7 +7,7 @@ description: Relatório FinOps de custo de IA por projeto, modelo e período, a 
 
 1. Ingerir dados mais recentes dos transcripts do Claude Code:
    ```bash
-   python3 ${CLAUDE_PLUGIN_ROOT}/store/ingest_transcripts.py
+   python3 ${CLAUDE_PLUGIN_ROOT}/src/tollgate/governance/store/ingest_transcripts.py
    ```
 2. Gerar o relatório (ajuste `--days`, `--project`, `--by project|model|day` conforme o pedido):
    ```bash
