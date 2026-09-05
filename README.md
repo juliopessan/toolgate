@@ -1,9 +1,6 @@
 # Tollgate
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/hero-dark.png">
-  <img src="docs/assets/hero-light.png" alt="Tollgate: a real 9,400-token horizon-tier request admits 7,950 tokens and rejects 15.4% pre-call — measured from a live Guardian run, not estimated.">
-</picture>
+<img src="docs/assets/hero-light.png" alt="Tollgate: a real 9,400-token horizon-tier request admits 7,950 tokens and rejects 15.4% pre-call — measured from a live Guardian run, not estimated.">
 
 > Every candidate token must pass three gates: **Admission** — does it deserve
 > to enter? **Compression** — can it be smaller? **Audit** — did it generate
