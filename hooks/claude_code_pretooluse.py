@@ -23,11 +23,24 @@ Two things it deliberately does NOT reuse from the rest of this repository:
    block small, legitimate tool calls. The three buckets below are payload
    size compression budgets only, not a reasoning-tier decision.
 
-Registered in hooks.json against the ``Task`` tool: a subagent's prompt is
-the one PreToolUse payload that actually resembles context handed to another
-LLM turn. Claude Code does not expose a hook on its own model/provider calls,
-so this is the closest available interception point — extend the matcher to
-other tools (e.g. ``mcp__.*``) if their payloads deserve the same gate.
+Registered in hooks.json against ``Task`` and ``mcp__.*``: a subagent's
+prompt, and an MCP tool call's own free-text argument, are the PreToolUse
+payloads that actually resemble context handed to another LLM turn or an
+external service. Claude Code does not expose a hook on its own
+model/provider calls, so these are the closest available interception
+points.
+
+MCP tool schemas vary per server, so there is no single field name to gate
+the way ``Task`` always has ``prompt``. ``_pick_gated_field`` tries a short
+list of common free-text argument names (``prompt``, ``query``, ``content``,
+``text``, ``input``, ``message``) and gates whichever one is present as a
+non-empty string. If none match, the whole ``tool_input`` is scored and
+capped for admission, but — because there is no single field to safely
+rewrite — a compression is not written back via ``updatedInput``; only a
+hard block (``GuardianBlocked``, e.g. the payload is too large to admit at
+all) has any effect in that fallback case. Add the tool's actual field name
+to the candidate list, or write a tool-specific extractor, before relying on
+this bridge to compress that tool's payloads in place.
 """
 from __future__ import annotations
 
@@ -67,10 +80,18 @@ def payload_size_score(tokens: int) -> float:
     return max(0.0, min(100.0, (tokens / SCORE_CEILING_TOKENS) * 100))
 
 
-# The one tool_input field actually worth gating for Task: the subagent's
-# prompt is the payload that resembles context handed to another LLM turn.
-# Other fields (description, subagent_type) pass through untouched.
-GATED_FIELD = "prompt"
+# Common free-text argument names across Task and MCP tool schemas, in
+# priority order. The first present non-empty string field is gated; every
+# other field on the tool passes through untouched.
+GATED_FIELD_CANDIDATES = ("prompt", "query", "content", "text", "input", "message")
+
+
+def pick_gated_field(tool_input: dict) -> str | None:
+    for name in GATED_FIELD_CANDIDATES:
+        value = tool_input.get(name)
+        if isinstance(value, str) and value:
+            return name
+    return None
 
 
 def _deny(reason: str) -> dict:
@@ -98,7 +119,8 @@ def main() -> int:
     request = json.load(sys.stdin)
     tool_name = str(request.get("tool_name", "unknown"))
     tool_input = dict(request.get("tool_input", {}))
-    payload = str(tool_input.get(GATED_FIELD, "")) or json.dumps(tool_input, ensure_ascii=False)
+    gated_field = pick_gated_field(tool_input)
+    payload = tool_input[gated_field] if gated_field else json.dumps(tool_input, ensure_ascii=False)
 
     tokens = estimate_tokens(payload)
     score = payload_size_score(tokens)
@@ -130,8 +152,8 @@ def main() -> int:
         return 0
 
     updated_input = None
-    if GATED_FIELD in tool_input and result.envelope.payload != payload:
-        updated_input = {**tool_input, GATED_FIELD: result.envelope.payload}
+    if gated_field and result.envelope.payload != payload:
+        updated_input = {**tool_input, gated_field: result.envelope.payload}
 
     json.dump(_allow(tier, score, updated_input), sys.stdout)
     return 0

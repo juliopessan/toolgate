@@ -22,7 +22,7 @@ def verify_headroom() -> dict[str, object]:
         ]
         * 40
     )
-    compressed = HeadroomCompressor(model=os.getenv("ZWCA_HEADROOM_MODEL", "gpt-4o-mini")).compress(
+    compressed = HeadroomCompressor(model=os.getenv("TOLLGATE_HEADROOM_MODEL", "gpt-4o-mini")).compress(
         sample, target_tokens=max(len(sample) // 16, 64)
     )
     if not compressed or len(compressed) >= len(sample):
@@ -44,7 +44,7 @@ def verify_openai_live(model: str) -> dict[str, object]:
     )
     response = provider.complete(
         model=model,
-        payload="Reply with exactly: ZWCA provider smoke test passed",
+        payload="Reply with exactly: tollgate provider smoke test passed",
         max_output_tokens=20,
     )
     return {
@@ -68,7 +68,7 @@ def verify_anthropic_live(model: str) -> dict[str, object]:
     )
     response = provider.complete(
         model=model,
-        payload="Reply with exactly: ZWCA Anthropic smoke test passed",
+        payload="Reply with exactly: tollgate Anthropic smoke test passed",
         max_output_tokens=30,
     )
     return {

@@ -65,3 +65,43 @@ def test_fields_other_than_prompt_pass_through_untouched(tmp_path: Path) -> None
     output = response["hookSpecificOutput"]
     assert output["permissionDecision"] == "allow"
     assert "updatedInput" not in output
+
+
+def _mcp_request(tool_name: str, query: str) -> dict:
+    return {
+        "session_id": "session-1",
+        "hook_event_name": "PreToolUse",
+        "tool_name": tool_name,
+        "cwd": "/home/user/some-project",
+        "tool_use_id": "toolu_mcp",
+        "tool_input": {"query": query, "top_k": 5},
+    }
+
+
+def test_an_mcp_tool_with_a_query_field_is_gated_the_same_way(tmp_path: Path) -> None:
+    huge_query = "\n".join(f"search context {i} filler filler filler" for i in range(4000))
+    response = _run_hook(_mcp_request("mcp__Exa__web_search_exa", huge_query), tmp_path)
+
+    output = response["hookSpecificOutput"]
+    assert output["permissionDecision"] == "allow"
+    updated = output["updatedInput"]
+    assert updated["top_k"] == 5
+    assert len(updated["query"]) < len(huge_query)
+    assert "[tollgate] truncated" in updated["query"]
+
+
+def test_an_mcp_tool_with_no_recognized_field_is_scored_but_not_rewritten(tmp_path: Path) -> None:
+    request = {
+        "session_id": "session-1",
+        "hook_event_name": "PreToolUse",
+        "tool_name": "mcp__github__create_pull_request",
+        "cwd": "/home/user/some-project",
+        "tool_use_id": "toolu_mcp2",
+        "tool_input": {"owner": "juliopessan", "repo": "tollgate", "head": "a", "base": "main"},
+    }
+
+    response = _run_hook(request, tmp_path)
+
+    output = response["hookSpecificOutput"]
+    assert output["permissionDecision"] == "allow"
+    assert "updatedInput" not in output
