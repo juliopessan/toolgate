@@ -53,13 +53,13 @@ def _reservation_db(tmp_path: Path) -> Path:
     with sqlite3.connect(db) as conn:
         conn.executescript(
             """
-            CREATE TABLE zwca_sessions(session_id TEXT PRIMARY KEY);
+            CREATE TABLE tollgate_sessions(session_id TEXT PRIMARY KEY);
             CREATE TABLE waste_ledger_events(
               session_id TEXT, artifact_id TEXT, actual_cost_usd REAL
             );
             """
         )
-        conn.execute("INSERT INTO zwca_sessions(session_id) VALUES ('s1')")
+        conn.execute("INSERT INTO tollgate_sessions(session_id) VALUES ('s1')")
         conn.executescript(Path("src/tollgate/governance/store/migrations/003_budget_reservations.sql").read_text())
     return db
 

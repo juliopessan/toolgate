@@ -1,4 +1,4 @@
-"""tools-tokens - a plug-and-play context toolkit.
+"""tollgate.context - a plug-and-play context toolkit.
 
 Six layers, each usable on its own, that compose into one answer to the question
 every agent has to answer on every turn: *what goes in the window?*

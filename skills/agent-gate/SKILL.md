@@ -1,23 +1,23 @@
 ---
 name: agent-gate
-description: Quality gate de Agent OPS — valida sintaxe (AST) de código gerado, roda testes e controla o lifecycle de agentes no registry (draft→validated→production). Use antes de commitar código gerado ou promover um agente.
+description: Agent OPS quality gate — validates syntax (AST) of generated code, runs tests, and manages agent lifecycle in the registry (draft→validated→production). Use before committing generated code or promoting an agent.
 ---
 
 # Agent Gate
 
-AST = Abstract Syntax Tree (Árvore de Sintaxe Abstrata). O gate 1 abaixo usa AST para validação determinística de sintaxe — sem LLM envolvido.
+AST = Abstract Syntax Tree. Gate 1 below uses AST for deterministic syntax validation — no LLM involved.
 
-## 1. Gate sintático (sempre, antes de commit de código gerado)
+## 1. Syntax gate (always, before committing generated code)
 ```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/scripts/gate.py <arquivos alterados>
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/gate.py <changed files>
 ```
-FAIL em qualquer arquivo = corrigir antes de prosseguir.
+FAIL on any file = fix before proceeding.
 
-## 2. Gate funcional
-Rode lint + testes do projeto (`npm run lint && npm test`, ou `pytest`). Só prossiga com tudo verde.
+## 2. Functional gate
+Run the project's lint + tests (`npm run lint && npm test`, or `pytest`). Only proceed once everything is green.
 
-## 3. Lifecycle no registry
-Registre/promova o agente no store:
+## 3. Registry lifecycle
+Register/promote the agent in the store:
 ```bash
 python3 - <<'EOF'
 import sys; sys.path.insert(0, "${CLAUDE_PLUGIN_ROOT}/src")
@@ -31,11 +31,11 @@ conn.execute("""INSERT INTO agent_registry (name, project, model, status, owner,
 conn.commit()
 EOF
 ```
-Status válidos: `draft` → `validated` (gates 1–2 ok) → `production` (promovido após validação em uso real) → `deprecated`.
+Valid statuses: `draft` → `validated` (gates 1–2 passed) → `production` (promoted after real-usage validation) → `deprecated`.
 
-## 4. Sincronizar inventário
+## 4. Sync the inventory
 
-Para descobrir e registrar automaticamente agentes novos nos projetos (entram como `draft`):
+To discover and auto-register new agents across projects (they enter as `draft`):
 ```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/scripts/sync_registry.py <raiz-dos-projetos> --owner <nome>
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/sync_registry.py <projects-root> --owner <name>
 ```

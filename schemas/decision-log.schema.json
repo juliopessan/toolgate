@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://agent-finops.dev/schemas/decision-log.schema.json",
-  "title": "ZWCA Decision Log Entry",
+  "title": "Tollgate Decision Log Entry",
   "type": "object",
   "additionalProperties": false,
   "required": ["decision_id", "occurred_at", "project_id", "decision", "reason", "status"],

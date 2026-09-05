@@ -5,7 +5,7 @@ from tollgate.governance.runtime.anthropic_provider import AnthropicMessagesProv
 
 def test_anthropic_messages_usage_and_cost_mapping():
     response = SimpleNamespace(
-        content=[SimpleNamespace(type="text", text="ZWCA Anthropic passed")],
+        content=[SimpleNamespace(type="text", text="Tollgate Anthropic passed")],
         usage=SimpleNamespace(
             input_tokens=100,
             output_tokens=20,
@@ -41,7 +41,7 @@ def test_anthropic_messages_usage_and_cost_mapping():
     )
 
     expected = (100 * 3 + 20 * 15 + 10 * 3.75 + 5 * 0.30) / 1_000_000
-    assert result.content == "ZWCA Anthropic passed"
+    assert result.content == "Tollgate Anthropic passed"
     assert result.input_tokens == 115
     assert result.output_tokens == 20
     assert result.cost_usd == expected

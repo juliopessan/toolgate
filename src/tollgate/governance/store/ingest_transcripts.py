@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Ingere transcripts do Claude Code (~/.claude/projects/*/*.jsonl) no store.
+"""Ingests Claude Code transcripts (~/.claude/projects/*/*.jsonl) into the store.
 
-Fonte de verdade dos tokens reais: cada mensagem 'assistant' carrega
-message.usage {input_tokens, output_tokens, cache_*}. Idempotente
-(message_id é chave primária).
+Source of truth for real token counts: every 'assistant' message carries
+message.usage {input_tokens, output_tokens, cache_*}. Idempotent
+(message_id is the primary key).
 """
 import json
 import sys
@@ -16,7 +16,7 @@ PROJECTS_DIR = Path.home() / ".claude" / "projects"
 
 
 def project_name(dirname: str) -> str:
-    # dirs são o cwd com '/' vira '-': pega o último segmento útil
+    # dirnames are the cwd with '/' turned into '-': take the last useful segment
     return dirname.rstrip("-").split("-")[-1] or dirname
 
 

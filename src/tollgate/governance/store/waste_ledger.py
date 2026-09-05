@@ -57,11 +57,11 @@ class WasteLedger:
         with self.connect() as connection:
             connection.execute(
                 """
-                INSERT INTO zwca_sessions(session_id, project_id, budget_usd, created_at, updated_at)
+                INSERT INTO tollgate_sessions(session_id, project_id, budget_usd, created_at, updated_at)
                 VALUES (?, ?, ?, ?, ?)
                 ON CONFLICT(session_id) DO UPDATE SET
                     project_id = excluded.project_id,
-                    budget_usd = COALESCE(excluded.budget_usd, zwca_sessions.budget_usd),
+                    budget_usd = COALESCE(excluded.budget_usd, tollgate_sessions.budget_usd),
                     updated_at = excluded.updated_at
                 """,
                 (session_id, project_id, budget_usd, now, now),
@@ -81,7 +81,7 @@ class WasteLedger:
             if event.actual_cost_usd is not None:
                 connection.execute(
                     """
-                    UPDATE zwca_sessions
+                    UPDATE tollgate_sessions
                     SET spent_usd = spent_usd + ?, updated_at = ?
                     WHERE session_id = ?
                     """,
@@ -91,7 +91,7 @@ class WasteLedger:
     def session_spend(self, session_id: str) -> float:
         with self.connect() as connection:
             row = connection.execute(
-                "SELECT spent_usd FROM zwca_sessions WHERE session_id = ?", (session_id,)
+                "SELECT spent_usd FROM tollgate_sessions WHERE session_id = ?", (session_id,)
             ).fetchone()
         return float(row["spent_usd"]) if row else 0.0
 

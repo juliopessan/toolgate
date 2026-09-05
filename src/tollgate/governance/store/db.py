@@ -1,4 +1,4 @@
-"""Store central do tollgate: SQLite em ~/.tollgate/telemetry.db."""
+"""Central tollgate store: SQLite at ~/.tollgate/telemetry.db."""
 import json
 import os
 import sqlite3

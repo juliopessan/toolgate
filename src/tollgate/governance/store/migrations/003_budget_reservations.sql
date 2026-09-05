@@ -1,6 +1,6 @@
 PRAGMA foreign_keys = ON;
 
-CREATE TABLE IF NOT EXISTS zwca_budget_reservations (
+CREATE TABLE IF NOT EXISTS tollgate_budget_reservations (
     reservation_id TEXT PRIMARY KEY,
     session_id TEXT NOT NULL,
     artifact_id TEXT NOT NULL,
@@ -9,12 +9,12 @@ CREATE TABLE IF NOT EXISTS zwca_budget_reservations (
     created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
     expires_at TEXT NOT NULL,
     committed_cost_usd REAL,
-    FOREIGN KEY (session_id) REFERENCES zwca_sessions(session_id)
+    FOREIGN KEY (session_id) REFERENCES tollgate_sessions(session_id)
 );
 
-CREATE INDEX IF NOT EXISTS idx_zwca_reservations_session_status
-    ON zwca_budget_reservations(session_id, status);
-CREATE INDEX IF NOT EXISTS idx_zwca_reservations_artifact_status
-    ON zwca_budget_reservations(artifact_id, status);
-CREATE INDEX IF NOT EXISTS idx_zwca_reservations_expiry
-    ON zwca_budget_reservations(expires_at, status);
+CREATE INDEX IF NOT EXISTS idx_tollgate_reservations_session_status
+    ON tollgate_budget_reservations(session_id, status);
+CREATE INDEX IF NOT EXISTS idx_tollgate_reservations_artifact_status
+    ON tollgate_budget_reservations(artifact_id, status);
+CREATE INDEX IF NOT EXISTS idx_tollgate_reservations_expiry
+    ON tollgate_budget_reservations(expires_at, status);

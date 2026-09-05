@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Analisa a telemetria e emite recomendações de otimização de custo."""
+"""Analyzes telemetry and emits cost-optimization recommendations."""
 import argparse
 import sys
 from pathlib import Path
@@ -9,7 +9,7 @@ from tollgate.governance.store import db  # noqa: E402
 
 
 def analyze(conn, days: int) -> list[dict]:
-    """Retorna recomendações de rightsizing: [{project, model, usd, n, avg_out, cache_ratio, tags}]."""
+    """Returns rightsizing recommendations: [{project, model, usd, n, avg_out, cache_ratio, tags}]."""
     since = f"-{days} days"
     rows = conn.execute(
         """SELECT project, model, SUM(input_tokens), SUM(output_tokens),
@@ -27,11 +27,11 @@ def analyze(conn, days: int) -> list[dict]:
         cache_ratio = (cread or 0) / max((inp or 0) + (cread or 0), 1)
         tags = []
         if ("opus" in model or "fable" in model) and avg_out < 300:
-            tags.append("DOWNGRADE? outputs curtos — testar sonnet-5/haiku-4-5 com agent-gate")
+            tags.append("DOWNGRADE? short outputs — try sonnet-5/haiku-4-5 with agent-gate")
         if cache_ratio < 0.5 and (inp or 0) > 100_000:
-            tags.append(f"CACHE baixo ({cache_ratio:.0%}) — verificar invalidadores de prefixo")
+            tags.append(f"LOW CACHE ({cache_ratio:.0%}) — check prefix invalidators")
         if usd > 20:
-            tags.append("VOLUME alto — avaliar Batch API (-50%) e compressão Headroom")
+            tags.append("HIGH VOLUME — consider Batch API (-50%) and Headroom compression")
         if tags:
             out_recs.append(
                 {
@@ -55,7 +55,7 @@ def main():
     recs = analyze(conn, args.days)
     conn.close()
 
-    print(f"\n== Rightsizing · últimos {args.days} dias ==\n")
+    print(f"\n== Rightsizing · last {args.days} days ==\n")
     for r in recs:
         print(f"[{r['project']} · {r['model']}]  US$ {r['usd']:.2f}  "
               f"({r['n']} msgs, avg_out={r['avg_out']:.0f} tok, cache={r['cache_ratio']:.0%})")
@@ -63,7 +63,7 @@ def main():
             print(f"   -> {t}")
         print()
     if not recs:
-        print("Nenhuma recomendação relevante — perfil de uso saudável ou dados insuficientes.")
+        print("No relevant recommendations — healthy usage profile or insufficient data.")
 
 
 if __name__ == "__main__":

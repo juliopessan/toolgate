@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Deterministic complexity scoring and tier selection for ZWCA.
+"""Deterministic complexity scoring and tier selection for Tollgate.
 
 This module intentionally performs no LLM calls. It converts structural features
 extracted by platform adapters into a stable 0–100 score used by the dispatch
@@ -117,7 +117,7 @@ def tier_for_score(score: float) -> str:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Calculate a ZWCA complexity score")
+    parser = argparse.ArgumentParser(description="Calculate a Tollgate complexity score")
     parser.add_argument("input", type=Path, help="JSON file containing structural features")
     parser.add_argument("--pretty", action="store_true", help="Pretty-print JSON output")
     args = parser.parse_args()

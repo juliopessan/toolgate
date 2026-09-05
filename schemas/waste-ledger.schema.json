@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://agent-finops.dev/schemas/waste-ledger.schema.json",
-  "title": "ZWCA Waste Ledger Event",
+  "title": "Tollgate Waste Ledger Event",
   "type": "object",
   "additionalProperties": false,
   "required": [

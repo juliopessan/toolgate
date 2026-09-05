@@ -1,34 +1,34 @@
 ---
 name: code-nav
-description: Navegação estrutural de código via AST (ast-grep/tree-sitter) para achar símbolos, funções e padrões lendo o mínimo de tokens. Use antes de varrer arquivos inteiros em bases grandes, ou quando o usuário pedir busca estrutural.
+description: Structural code navigation via AST (ast-grep/tree-sitter) to find symbols, functions and patterns while reading the minimum number of tokens. Use before scanning whole files in large codebases, or when the user asks for structural search.
 ---
 
 # Code Nav (AST)
 
-AST = Abstract Syntax Tree (Árvore de Sintaxe Abstrata): representação em árvore da estrutura lógica do código-fonte, usada aqui via ast-grep/tree-sitter para navegar com precisão sintática em vez de tratar o código como texto plano.
+AST = Abstract Syntax Tree: a tree representation of source code's logical structure, used here via ast-grep/tree-sitter to navigate with syntactic precision instead of treating code as plain text.
 
-Objetivo FinOps: substituir "ler arquivos inteiros" por consultas estruturais — menos tokens antes mesmo de compressão.
+FinOps goal: replace "read whole files" with structural queries — fewer tokens even before compression.
 
-## Setup (uma vez por máquina)
+## Setup (once per machine)
 ```bash
-brew install ast-grep   # ou: npm i -g @ast-grep/cli
+brew install ast-grep   # or: npm i -g @ast-grep/cli
 ```
 
-## Padrões de uso
+## Usage patterns
 
-Buscar uma função/símbolo em vez de abrir arquivos:
+Search for a function/symbol instead of opening files:
 ```bash
-ast-grep run -p 'function $NAME($$$) { $$$ }' --lang ts src/   # definições TS
-ast-grep run -p 'def $NAME($$$):' --lang py .                  # definições Python
-ast-grep run -p 'useEffect($$$)' --lang tsx src/               # usos de hook
+ast-grep run -p 'function $NAME($$$) { $$$ }' --lang ts src/   # TS definitions
+ast-grep run -p 'def $NAME($$$):' --lang py .                  # Python definitions
+ast-grep run -p 'useEffect($$$)' --lang tsx src/               # hook usages
 ```
 
-Extrair só o corpo de um símbolo específico:
+Extract just the body of a specific symbol:
 ```bash
 ast-grep run -p 'def process_invoice($$$): $$$' --lang py --json | head -50
 ```
 
-## Regras
-1. Em bases > ~50 arquivos, tente `ast-grep` antes de `Read` em arquivos inteiros.
-2. Leia apenas o trecho retornado (linha inicial/final do match) via Read com offset/limit.
-3. Registre economias relevantes na tabela `savings` (source='ast') estimando tokens evitados (tamanho do arquivo − trecho lido, /4).
+## Rules
+1. In codebases > ~50 files, try `ast-grep` before `Read`ing whole files.
+2. Read only the returned span (match start/end line) via Read with offset/limit.
+3. Record relevant savings in the `savings` table (source='ast'), estimating avoided tokens (file size − span read, /4).

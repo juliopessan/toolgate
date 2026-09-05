@@ -64,21 +64,21 @@ class ChangeHistory:
         params = [values[column] for column in values] + [affected, metadata]
         with self.connect() as connection:
             connection.execute(
-                f"INSERT INTO zwca_artifact_changes ({','.join(columns)}) VALUES ({placeholders})",
+                f"INSERT INTO tollgate_artifact_changes ({','.join(columns)}) VALUES ({placeholders})",
                 params,
             )
 
     def history(self, artifact_id: str) -> list[sqlite3.Row]:
         with self.connect() as connection:
             return connection.execute(
-                "SELECT * FROM zwca_artifact_changes WHERE artifact_id = ? ORDER BY occurred_at",
+                "SELECT * FROM tollgate_artifact_changes WHERE artifact_id = ? ORDER BY occurred_at",
                 (artifact_id,),
             ).fetchall()
 
     def latest_version(self, artifact_id: str) -> str | None:
         with self.connect() as connection:
             row = connection.execute(
-                "SELECT to_version FROM zwca_artifact_changes WHERE artifact_id = ? "
+                "SELECT to_version FROM tollgate_artifact_changes WHERE artifact_id = ? "
                 "ORDER BY occurred_at DESC LIMIT 1",
                 (artifact_id,),
             ).fetchone()

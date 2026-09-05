@@ -44,11 +44,11 @@ SEARCH_TOOLS = {"Grep", "grep", "search", "rg", "ripgrep"}
 
 #: Hosts report back through this pseudo-tool when their agent acted on a
 #: suggestion, which is what turns an offer into a realised saving.
-ACCEPT_TOOLS = {"tools-tokens/accepted", "ToolsTokensAccepted"}
+ACCEPT_TOOLS = {"tollgate/accepted", "TollgateAccepted"}
 
 #: Reported by a host that served the narrow read itself. Optional: the CLI
 #: claims its own offers, so the ledger works with no host cooperation.
-NARROW_READ_TOOLS = {"tools-tokens/narrow-read", "ToolsTokensNarrowRead"}
+NARROW_READ_TOOLS = {"tollgate/narrow-read", "TollgateNarrowRead"}
 
 
 def _passthrough(reason: str = "") -> Dict[str, Any]:
@@ -126,8 +126,8 @@ def suggest_for_read(
         "hint_tokens": outline_tokens,
         "pressure": pressure,
         "next": [
-            f"tools-tokens symbol {path} <SymbolName>",
-            f"tools-tokens skeleton {path}",
+            f"tollgate symbol {path} <SymbolName>",
+            f"tollgate skeleton {path}",
         ],
     }
 
@@ -157,7 +157,7 @@ def suggest_for_search(
             {"citation": h.chunk.citation(), "score": round(h.score, 3), "tokens": h.chunk.tokens}
             for h in hits
         ],
-        "next": [f"tools-tokens symbol {h.chunk.path} {h.chunk.symbol}" for h in hits if h.chunk.symbol][:3],
+        "next": [f"tollgate symbol {h.chunk.path} {h.chunk.symbol}" for h in hits if h.chunk.symbol][:3],
     }
 
 

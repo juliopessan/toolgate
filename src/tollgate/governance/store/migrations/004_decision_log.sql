@@ -1,6 +1,6 @@
 PRAGMA foreign_keys = ON;
 
-CREATE TABLE IF NOT EXISTS zwca_decisions (
+CREATE TABLE IF NOT EXISTS tollgate_decisions (
     decision_id TEXT PRIMARY KEY,
     occurred_at TEXT NOT NULL,
     project_id TEXT NOT NULL,
@@ -14,12 +14,12 @@ CREATE TABLE IF NOT EXISTS zwca_decisions (
     supersedes_decision_id TEXT,
     tags_json TEXT NOT NULL DEFAULT '[]',
     metadata_json TEXT NOT NULL DEFAULT '{}',
-    FOREIGN KEY (supersedes_decision_id) REFERENCES zwca_decisions(decision_id)
+    FOREIGN KEY (supersedes_decision_id) REFERENCES tollgate_decisions(decision_id)
 );
 
 CREATE INDEX IF NOT EXISTS idx_decisions_project_time
-    ON zwca_decisions(project_id, occurred_at);
+    ON tollgate_decisions(project_id, occurred_at);
 CREATE INDEX IF NOT EXISTS idx_decisions_artifact_time
-    ON zwca_decisions(artifact_id, occurred_at);
+    ON tollgate_decisions(artifact_id, occurred_at);
 CREATE INDEX IF NOT EXISTS idx_decisions_status
-    ON zwca_decisions(status);
+    ON tollgate_decisions(status);

@@ -48,7 +48,7 @@ def load_waste_ledger_metrics(db_path: str | Path) -> dict[str, Any]:
             )
         ]
         active_reservations = conn.execute(
-            "SELECT COUNT(*) FROM zwca_budget_reservations WHERE status='active'"
+            "SELECT COUNT(*) FROM tollgate_budget_reservations WHERE status='active'"
         ).fetchone()[0]
 
     candidate = int(totals["tokens_candidate"])

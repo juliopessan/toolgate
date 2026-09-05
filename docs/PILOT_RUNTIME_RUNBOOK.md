@@ -1,6 +1,6 @@
 # Pilot Runtime Runbook
 
-This runbook validates the two external dependencies required to promote the ZWCA pilot beyond contract-only status:
+This runbook validates the two external dependencies required to promote the Tollgate pilot beyond contract-only status:
 
 1. Headroom inline context compression;
 2. OpenAI Responses API provider execution.

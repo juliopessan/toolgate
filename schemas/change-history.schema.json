@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://agent-finops.dev/schemas/change-history.schema.json",
-  "title": "ZWCA Artifact Change Event",
+  "title": "Tollgate Artifact Change Event",
   "type": "object",
   "additionalProperties": false,
   "required": [

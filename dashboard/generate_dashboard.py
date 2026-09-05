@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Gera dashboard HTML self-contained a partir do store, no Ledger Design System.
+"""Generates a self-contained dashboard HTML page from the store, in the Ledger Design System.
 
-Uso: python3 dashboard/generate_dashboard.py [--days 30] [--out dashboard.html]
+Usage: python3 dashboard/generate_dashboard.py [--days 30] [--out dashboard.html]
 """
 import argparse
 import datetime
@@ -58,7 +58,7 @@ def main():
             cells = "".join(f"<td>{html.escape(str((fmt or (lambda i, v: v))(i, v)))}</td>" for i, v in enumerate(r))
             body += f"<tr>{cells}</tr>"
         thead = f"<thead><tr>{h}</tr></thead>" if h else ""
-        tbod = f"<tbody>{body or '<tr><td colspan=99>sem dados</td></tr>'}</tbody>"
+        tbod = f"<tbody>{body or '<tr><td colspan=99>no data</td></tr>'}</tbody>"
         return f"<table>{thead}{tbod}</table>"
 
     def dict_table(headers, rows, keys, fmt=None):
@@ -150,7 +150,7 @@ def main():
   <div class="hero">
     <div class="eyebrow"><span class="rule"></span> GOVERNANCE &amp; OBSERVABILITY · PLANE 4</div>
     <h1>Waste Ledger</h1>
-    <p class="sub">Custo, tokens e decisões do Guardian nos últimos $days dias — gerado localmente a partir do SQLite em <code>$db_path</code>.</p>
+    <p class="sub">Cost, tokens and Guardian decisions over the last $days days — generated locally from the SQLite store at <code>$db_path</code>.</p>
   </div>
 
   <div class="ledger">
@@ -158,46 +158,46 @@ def main():
       <span><span class="dot"></span><span class="title">ENFORCEMENT SUMMARY</span></span>
       <span>$artifacts artefatos · $admitted_events admitidos · $blocked_events bloqueados</span>
     </div>
-    <div class="row-label"><span>Candidato · o que os agentes pediram</span><span class="num orange">$tokens_candidate</span></div>
+    <div class="row-label"><span>Candidate · what the agents asked for</span><span class="num orange">$tokens_candidate</span></div>
     <div class="bar-track"><div class="bar-fill orange"></div></div>
     <div class="row-label"><span>Transmitido · o que passou pelo Guardian</span><span class="num green">$tokens_transmitted</span></div>
     <div class="bar-track"><div class="bar-fill green"></div></div>
     <div class="stat-grid">
-      <div><span class="num">$reduction_pct%</span><span class="lab">redução blended</span></div>
+      <div><span class="num">$reduction_pct%</span><span class="lab">blended reduction</span></div>
       <div><span class="num">$tokens_rejected</span><span class="lab">tokens rejeitados</span></div>
       <div><span class="num">$active_reservations</span><span class="lab">reservas ativas</span></div>
-      <div><span class="num">US$ $actual_cost_usd</span><span class="lab">custo medido (audit)</span></div>
+      <div><span class="num">US$ $actual_cost_usd</span><span class="lab">measured cost (audit)</span></div>
     </div>
   </div>
 
   <section>
-    <div class="sec-head"><span class="sec-num">01</span><h2>Resumo de custo</h2></div>
+    <div class="sec-head"><span class="sec-num">01</span><h2>Cost summary</h2></div>
     <div class="stat-tiles">
-      <div class="stat-tile"><div class="v">US$ $total</div><div class="l">CUSTO TOTAL</div></div>
-      <div class="stat-tile"><div class="v">US$ $saved</div><div class="l">ECONOMIA REGISTRADA</div></div>
-      <div class="stat-tile"><div class="v">$len_by_project</div><div class="l">PROJETOS ATIVOS</div></div>
-      <div class="stat-tile"><div class="v">$len_registry</div><div class="l">AGENTES NO REGISTRY</div></div>
+      <div class="stat-tile"><div class="v">US$ $total</div><div class="l">TOTAL COST</div></div>
+      <div class="stat-tile"><div class="v">US$ $saved</div><div class="l">RECORDED SAVINGS</div></div>
+      <div class="stat-tile"><div class="v">$len_by_project</div><div class="l">ACTIVE PROJECTS</div></div>
+      <div class="stat-tile"><div class="v">$len_registry</div><div class="l">AGENTS IN REGISTRY</div></div>
     </div>
   </section>
 
   <section>
-    <div class="sec-head"><span class="sec-num">02</span><h2>Consumo</h2></div>
+    <div class="sec-head"><span class="sec-num">02</span><h2>Consumption</h2></div>
     <div class="chart"><canvas id="c"></canvas></div>
-    <h2 style="margin-top:28px;font-size:18px">Por projeto</h2>
+    <h2 style="margin-top:28px;font-size:18px">By project</h2>
     $table_project
-    <h2 style="margin-top:24px;font-size:18px">Por modelo</h2>
+    <h2 style="margin-top:24px;font-size:18px">By model</h2>
     $table_model
   </section>
 
   <section>
-    <div class="sec-head"><span class="sec-num">03</span><h2>Guardian por tier</h2></div>
+    <div class="sec-head"><span class="sec-num">03</span><h2>Guardian by tier</h2></div>
     $table_tier
-    <h2 style="margin-top:24px;font-size:18px">Por reason code</h2>
+    <h2 style="margin-top:24px;font-size:18px">By reason code</h2>
     $table_reason
   </section>
 
   <section>
-    <div class="sec-head"><span class="sec-num">04</span><h2>Economia por camada</h2></div>
+    <div class="sec-head"><span class="sec-num">04</span><h2>Savings by layer</h2></div>
     $table_savings
   </section>
 
@@ -208,7 +208,7 @@ def main():
 </div>
 <footer>
   <span>tollgate runtime</span>
-  <span>Gerado localmente em $today</span>
+  <span>Generated locally at $today</span>
   <span>Deterministic before probabilistic.</span>
 </footer>
 <script>
@@ -236,16 +236,16 @@ if(canvas&&L.length>0&&V.length>0){
         saved=f"{saved:.2f}",
         len_by_project=len(by_project),
         len_registry=len(registry),
-        table_project=table(["projeto", "custo", "tokens"], by_project, money),
-        table_model=table(["modelo", "custo"], by_model, money),
-        table_savings=table(["camada", "tokens poupados", "USD"], savings, money),
-        table_registry=table(["agente", "projeto", "modelo", "status", "owner"], registry),
+        table_project=table(["project", "cost", "tokens"], by_project, money),
+        table_model=table(["model", "cost"], by_model, money),
+        table_savings=table(["layer", "tokens saved", "USD"], savings, money),
+        table_registry=table(["agent", "project", "model", "status", "owner"], registry),
         table_tier=dict_table(
-            ["tier", "eventos", "tokens transmitidos", "custo medido"],
+            ["tier", "events", "tokens transmitted", "measured cost"],
             ledger["by_tier"], ["tier", "events", "tokens_transmitted", "actual_cost_usd"], money,
         ),
         table_reason=dict_table(
-            ["reason code", "eventos"], ledger["by_reason"], ["reason_code", "events"],
+            ["reason code", "events"], ledger["by_reason"], ["reason_code", "events"],
         ),
         artifacts=s["artifacts"],
         admitted_events=s["admitted_events"],
@@ -259,10 +259,10 @@ if(canvas&&L.length>0&&V.length>0){
         bar_pct=bar_pct,
         days_labels=days_labels,
         days_values=days_values,
-        today=datetime.datetime.now().strftime("%d/%m/%Y %H:%M"),
+        today=datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),
     )
     Path(args.out).write_text(page, encoding='utf-8')
-    print(f"Dashboard gerado: {args.out}")
+    print(f"Dashboard generated: {args.out}")
 
 
 if __name__ == "__main__":

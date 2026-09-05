@@ -1,10 +1,10 @@
-# Zero-Waste Context Architecture (ZWCA)
+# Tollgate Architecture Blueprint
 
 > Canonical architecture for turning `tollgate` from a cost dashboard into an enforceable context-efficiency runtime.
 
 ## Decision
 
-ZWCA is **not a fifth framework**. It is the operating contract that unifies the existing capabilities already represented in this repository and its related engineering assets:
+Tollgate is **not a fifth framework**. It is the operating contract that unifies the existing capabilities already represented in this repository and its related engineering assets:
 
 - Thermal Gradient: economic tiers and model-cost strategy.
 - RTK: deterministic task dispatch and model routing.
@@ -117,7 +117,7 @@ Audit compares:
 
 ## Dispatch contract
 
-The canonical dispatch configuration lives in `config/zwca-dispatch.yaml`.
+The canonical dispatch configuration lives in `config/tollgate-dispatch.yaml`.
 
 Each tier defines:
 
@@ -230,4 +230,7 @@ Exit: A/B cohort of 100 artifacts, >=85% blended reduction, <US$50/artifact and 
 
 ## Naming
 
-Keep `tollgate` as the repository and distribution identity for compatibility. Use **ZWCA Runtime** as the architecture name until product branding is decided. A brand such as “Orange DNA” can be introduced later as a presentation layer without contaminating schemas, APIs or package names.
+`tollgate` is both the repository and the distribution identity — package
+name, CLI command and the four-plane architecture described above. There is
+no separate internal codename: schemas, APIs and package names all use this
+one name.

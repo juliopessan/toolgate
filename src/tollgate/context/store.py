@@ -46,7 +46,7 @@ from .semantic import Hit, tokenize
 SCHEMA_VERSION = 3
 
 #: Directory created inside the workspace. Add it to .gitignore.
-STORE_DIRNAME = ".tools-tokens"
+STORE_DIRNAME = ".tollgate-context"
 STORE_FILENAME = "index.db"
 
 #: Hooks fire in bursts and several agents may share one workspace. WAL gives

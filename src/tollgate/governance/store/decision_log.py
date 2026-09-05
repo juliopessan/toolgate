@@ -63,11 +63,11 @@ class DecisionLog:
         with self.connect() as connection:
             if decision.supersedes_decision_id:
                 connection.execute(
-                    "UPDATE zwca_decisions SET status = 'superseded' WHERE decision_id = ?",
+                    "UPDATE tollgate_decisions SET status = 'superseded' WHERE decision_id = ?",
                     (decision.supersedes_decision_id,),
                 )
             connection.execute(
-                f"INSERT INTO zwca_decisions ({','.join(columns)}) VALUES ({placeholders})",
+                f"INSERT INTO tollgate_decisions ({','.join(columns)}) VALUES ({placeholders})",
                 params,
             )
 
@@ -85,13 +85,13 @@ class DecisionLog:
         where = f"WHERE {' AND '.join(clauses)}" if clauses else ""
         with self.connect() as connection:
             return connection.execute(
-                f"SELECT * FROM zwca_decisions {where} ORDER BY occurred_at", params
+                f"SELECT * FROM tollgate_decisions {where} ORDER BY occurred_at", params
             ).fetchall()
 
     def current(self, *, project_id: str) -> list[sqlite3.Row]:
         with self.connect() as connection:
             return connection.execute(
-                "SELECT * FROM zwca_decisions "
+                "SELECT * FROM tollgate_decisions "
                 "WHERE project_id = ? AND status != 'superseded' "
                 "ORDER BY occurred_at",
                 (project_id,),

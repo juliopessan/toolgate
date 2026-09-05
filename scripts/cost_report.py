@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Relatório FinOps: custo x projeto x modelo x período.
+"""FinOps report: cost x project x model x period.
 
-Uso:
-  python3 scripts/cost_report.py [--days 30] [--project NOME] [--by model|project|day]
+Usage:
+  python3 scripts/cost_report.py [--days 30] [--project NAME] [--by model|project|day]
 """
 import argparse
 import sys
@@ -38,20 +38,20 @@ def main():
     ).fetchall()
 
     total = sum(r[5] or 0 for r in rows)
-    print(f"\n== tollgate · custo últimos {args.days} dias · por {args.by} ==\n")
-    print(f"{'grupo':<32}{'in':>12}{'out':>12}{'cache_r':>12}{'cache_w':>12}{'USD':>10}{'msgs':>7}")
+    print(f"\n== tollgate · cost last {args.days} days · by {args.by} ==\n")
+    print(f"{'group':<32}{'in':>12}{'out':>12}{'cache_r':>12}{'cache_w':>12}{'USD':>10}{'msgs':>7}")
     for grp, i, o, cr, cw, usd, n in rows:
         print(f"{str(grp)[:31]:<32}{i or 0:>12,}{o or 0:>12,}{cr or 0:>12,}{cw or 0:>12,}{usd or 0:>10.2f}{n:>7}")
     print(f"\nTOTAL: US$ {total:.2f}")
 
-    # Economia registrada (headroom/ast/rightsizing)
+    # Recorded savings (headroom/ast/rightsizing)
     sav = conn.execute(
         "SELECT source, SUM(tokens_saved), SUM(usd_saved) FROM savings"
         " WHERE ts >= datetime('now', ?) GROUP BY source",
         [f"-{args.days} days"],
     ).fetchall()
     if sav:
-        print("\n-- economia registrada --")
+        print("\n-- recorded savings --")
         for src, tk, usd in sav:
             print(f"  {src:<14} {tk or 0:>12,} tokens  US$ {usd or 0:.2f}")
     conn.close()

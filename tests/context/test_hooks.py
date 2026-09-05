@@ -243,7 +243,7 @@ class TestStoreBackedHook(HookTestBase):
 
         store = open_store(self.root)
         run_hook(
-            {"tool": "tools-tokens/accepted",
+            {"tool": "tollgate/accepted",
              "input": {"path": "big.py", "tokens_full": 9000, "tokens_served": 900}},
             root=self.root, store=store,
         )

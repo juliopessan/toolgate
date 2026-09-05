@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
-"""PostToolUse hook: registra cada tool call no store central.
+"""PostToolUse hook: records every tool call in the central store.
 
-Recebe JSON no stdin (payload padrão de hooks do Claude Code) e grava um
-evento com estimativa de tokens (chars/4). Nunca bloqueia a sessão: qualquer
-erro sai com código 0 silenciosamente.
+Reads JSON from stdin (Claude Code's standard hook payload) and writes an
+event with an estimated token count (chars/4). Never blocks the session:
+any error exits silently with code 0.
 """
 import json
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "store"))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
 def main():
     try:
         payload = json.load(sys.stdin)
-        import db  # noqa: E402
+        from tollgate.governance.store import db  # noqa: E402
         tool_input = json.dumps(payload.get("tool_input", ""), ensure_ascii=False)
         tool_response = json.dumps(payload.get("tool_response", ""), ensure_ascii=False)
         in_chars, out_chars = len(tool_input), len(tool_response)

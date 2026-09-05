@@ -1,41 +1,41 @@
 ---
 name: dashboard
-description: Gera o dashboard HTML self-contained (design Ledger) a partir da telemetria local — custo, tokens e decisões do Guardian. Use quando o usuário pedir dashboard, visualização, relatório visual ou "quero ver isso num HTML".
+description: Generates the self-contained dashboard HTML (Ledger design) from local telemetry — cost, tokens and Guardian decisions. Use when the user asks for a dashboard, a visualization, a visual report, or "I want to see this as HTML".
 ---
 
 # Dashboard
 
-1. Ingerir dados mais recentes (garante que o dashboard reflete o uso real até agora):
+1. Ingest the latest data (ensures the dashboard reflects real usage up to now):
    ```bash
    python3 ${CLAUDE_PLUGIN_ROOT}/src/tollgate/governance/store/ingest_transcripts.py
    ```
-2. Gerar o dashboard (ajuste `--days` conforme o período pedido):
+2. Generate the dashboard (adjust `--days` to the requested period):
    ```bash
    python3 ${CLAUDE_PLUGIN_ROOT}/dashboard/generate_dashboard.py --days 30
    ```
-3. O arquivo sai em `dashboard/dashboard.html` — abra no navegador (`open dashboard/dashboard.html` no macOS) e ofereça ao usuário.
+3. The file lands at `dashboard/dashboard.html` — open it in a browser (`open dashboard/dashboard.html` on macOS) and offer it to the user.
 
-Se a base de telemetria estiver vazia (nenhum `usage`/`waste_ledger_events` ainda),
-rode antes `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/demo_run.py` para popular o
-store com uma passada real do Guardian, ou aponte `--db` do próprio comando
-acima para um `~/.tollgate/telemetry.db` real do usuário.
+If the telemetry store is empty (no `usage`/`waste_ledger_events` yet), run
+`python3 ${CLAUDE_PLUGIN_ROOT}/scripts/demo_run.py` first to populate the
+store with a real Guardian pass, or point the command above's `--db` flag
+at the user's actual `~/.tollgate/telemetry.db`.
 
-## O que o dashboard mostra
+## What the dashboard shows
 
-- **Waste Ledger** (card escuro no topo): tokens candidatos vs. transmitidos,
-  % de redução blended, tokens rejeitados, reservas de budget ativas e custo
-  medido (audit) — vem de `dashboard/waste_ledger_metrics.py`.
-- **Resumo de custo**: custo total, economia registrada, projetos ativos,
-  agentes no registry.
-- **Consumo**: gráfico de custo por dia (canvas, sem dependência externa),
-  tabela por projeto e por modelo.
-- **Guardian por tier** e **por reason code** — de onde vêm os bloqueios e
-  recompressões (`MISSING_SCORE`, `TIER_INPUT_CAP_EXCEEDED`, etc.).
-- **Economia por camada** (`savings.source`: `context_compressor`, `headroom`,
+- **Waste Ledger** (dark card at the top): candidate vs. transmitted
+  tokens, blended reduction %, rejected tokens, active budget reservations
+  and measured (audit) cost — from `dashboard/waste_ledger_metrics.py`.
+- **Cost summary**: total cost, recorded savings, active projects, agents
+  in the registry.
+- **Consumption**: cost-per-day chart (canvas, no external dependency),
+  table by project and by model.
+- **Guardian by tier** and **by reason code** — where blocks and
+  recompressions come from (`MISSING_SCORE`, `TIER_INPUT_CAP_EXCEEDED`, etc.).
+- **Savings by layer** (`savings.source`: `context_compressor`, `headroom`,
   `ast`, `rightsizing`).
-- **Agent Registry** com status (`draft`/`validated`/`production`/`deprecated`).
+- **Agent Registry** with status (`draft`/`validated`/`production`/`deprecated`).
 
-Design system: paleta cream/mono ("Ledger") já embutida em
-`dashboard/generate_dashboard.py` — não depende de nenhuma outra skill de
-brand. Para reaproveitar o mesmo visual num relatório HTML avulso, veja o
-padrão usado em `docs/index.html` (a landing page do projeto).
+Design system: the cream/mono ("Ledger") palette is already built into
+`dashboard/generate_dashboard.py` — it doesn't depend on any other brand
+skill. To reuse the same look in a standalone HTML report, see the pattern
+used in `docs/index.html` (the project's landing page).

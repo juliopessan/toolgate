@@ -1,6 +1,6 @@
 PRAGMA foreign_keys = ON;
 
-CREATE TABLE IF NOT EXISTS zwca_sessions (
+CREATE TABLE IF NOT EXISTS tollgate_sessions (
     session_id TEXT PRIMARY KEY,
     project_id TEXT NOT NULL,
     budget_usd REAL,
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS waste_ledger_events (
     evidence_basis TEXT NOT NULL DEFAULT 'estimated',
     reason_code TEXT,
     metadata_json TEXT NOT NULL DEFAULT '{}',
-    FOREIGN KEY (session_id) REFERENCES zwca_sessions(session_id)
+    FOREIGN KEY (session_id) REFERENCES tollgate_sessions(session_id)
 );
 
 CREATE INDEX IF NOT EXISTS idx_waste_ledger_session_time

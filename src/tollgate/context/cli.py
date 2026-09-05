@@ -352,10 +352,10 @@ def cmd_forget(args) -> int:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="tools-tokens",
+        prog="tollgate",
         description="Token accounting, headroom budgeting, AST slicing and semantic packing.",
     )
-    parser.add_argument("--version", action="version", version=f"tools-tokens {__version__}")
+    parser.add_argument("--version", action="version", version=f"tollgate {__version__}")
     sub = parser.add_subparsers(dest="command", required=True)
 
     def add_common(target):

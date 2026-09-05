@@ -1,4 +1,4 @@
-"""ZWCA runtime enforcement components."""
+"""Tollgate runtime enforcement components."""
 
 from .guardian import CallEnvelope, EnforcementResult, Guardian, GuardianBlocked, TierPolicy
 

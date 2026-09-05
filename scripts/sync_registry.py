@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
-"""Sincroniza o agent_registry com os agentes reais encontrados nos projetos.
+"""Syncs agent_registry with the real agents found across projects.
 
-Varre um diretório raiz procurando definições de agentes:
-  - Markdown: **/agents/*.md e **/.claude/agents/*.md (formato Claude Code)
-  - Python:   **/agents/*.py com classe/def de agente (heurística)
+Walks a root directory looking for agent definitions:
+  - Markdown: **/agents/*.md and **/.claude/agents/*.md (Claude Code format)
+  - Python:   **/agents/*.py with an agent class/def (heuristic)
 
-Agentes novos entram como status='draft'; existentes têm project/model
-atualizados sem tocar no status (o lifecycle é gerido pelo agent-gate).
+New agents enter with status='draft'; existing ones have their
+project/model updated without touching status (lifecycle is owned by
+agent-gate).
 
-Uso: python3 scripts/sync_registry.py <raiz> [--owner NOME]
+Usage: python3 scripts/sync_registry.py <root> [--owner NAME]
 """
 import argparse
 import re
@@ -53,19 +54,19 @@ def main():
         key = f"{project}/{name}"
         cur = conn.execute(
             """INSERT INTO agent_registry (name, project, model, status, owner, notes)
-               VALUES (?,?,?,'draft',?, 'auto-registrado por sync_registry')
+               VALUES (?,?,?,'draft',?, 'auto-registered by sync_registry')
                ON CONFLICT(name) DO UPDATE SET project=excluded.project,
                  model=CASE WHEN excluded.model!='' THEN excluded.model ELSE agent_registry.model END,
                  updated_at=datetime('now')""",
             (key, project, model, args.owner),
         )
-        # rowcount é 1 em ambos os casos; distinguir por existência prévia é dispensável aqui
+        # rowcount is 1 in both cases; distinguishing insert vs. update isn't needed here
         n_new += cur.rowcount
     conn.commit()
     total = conn.execute("SELECT COUNT(*) FROM agent_registry").fetchone()[0]
-    print(f"Sync ok: {n_new} agentes processados; registry total = {total}")
+    print(f"Sync ok: {n_new} agents processed; registry total = {total}")
     for row in conn.execute("SELECT project, COUNT(*) FROM agent_registry GROUP BY project ORDER BY 2 DESC"):
-        print(f"  {row[0]:<28} {row[1]} agentes")
+        print(f"  {row[0]:<28} {row[1]} agents")
     conn.close()
 
 

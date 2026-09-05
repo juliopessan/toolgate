@@ -40,7 +40,7 @@ class BudgetReservations:
         with sqlite3.connect(self.db_path, isolation_level=None) as conn:
             conn.execute("BEGIN IMMEDIATE")
             conn.execute(
-                "UPDATE zwca_budget_reservations SET status='expired' "
+                "UPDATE tollgate_budget_reservations SET status='expired' "
                 "WHERE status='active' AND expires_at <= ?",
                 (now.isoformat(),),
             )
@@ -52,7 +52,7 @@ class BudgetReservations:
             )
             session_reserved = self._scalar(
                 conn,
-                "SELECT COALESCE(SUM(estimated_cost_usd),0) FROM zwca_budget_reservations "
+                "SELECT COALESCE(SUM(estimated_cost_usd),0) FROM tollgate_budget_reservations "
                 "WHERE session_id=? AND status='active'",
                 (session_id,),
             )
@@ -64,7 +64,7 @@ class BudgetReservations:
             )
             artifact_reserved = self._scalar(
                 conn,
-                "SELECT COALESCE(SUM(estimated_cost_usd),0) FROM zwca_budget_reservations "
+                "SELECT COALESCE(SUM(estimated_cost_usd),0) FROM tollgate_budget_reservations "
                 "WHERE artifact_id=? AND status='active'",
                 (artifact_id,),
             )
@@ -75,7 +75,7 @@ class BudgetReservations:
                 conn.execute("ROLLBACK")
                 raise ReservationRejected("artifact budget unavailable")
             conn.execute(
-                "INSERT INTO zwca_budget_reservations "
+                "INSERT INTO tollgate_budget_reservations "
                 "(reservation_id,session_id,artifact_id,estimated_cost_usd,status,expires_at) "
                 "VALUES (?,?,?,?, 'active', ?)",
                 (reservation_id, session_id, artifact_id, estimated_cost_usd, expires.isoformat()),
@@ -92,7 +92,7 @@ class BudgetReservations:
     def _transition(self, reservation_id: str, status: str, cost: float | None) -> None:
         with sqlite3.connect(self.db_path) as conn:
             cur = conn.execute(
-                "UPDATE zwca_budget_reservations SET status=?, committed_cost_usd=? "
+                "UPDATE tollgate_budget_reservations SET status=?, committed_cost_usd=? "
                 "WHERE reservation_id=? AND status='active'",
                 (status, cost, reservation_id),
             )

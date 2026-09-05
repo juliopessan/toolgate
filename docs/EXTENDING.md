@@ -9,18 +9,18 @@ reusable as-is; a small, well-defined part is not.
 
 This repository ships two things at once:
 
-1. **A Claude Code plugin surface** (`agents/`, `skills/`, `hooks/hooks.json`)
-   — the distribution mechanism for Claude Code specifically. There is no
-   `.claude-plugin/plugin.json` yet, so this is not installable as a plugin
-   today; treat `agents/` and `skills/` as reference material until that
-   manifest exists.
+1. **A Claude Code plugin** (`.claude-plugin/plugin.json`, `agents/`,
+   `skills/`, `hooks/hooks.json`) — the distribution mechanism for Claude
+   Code specifically. Load it with `claude --plugin-dir /path/to/tollgate`;
+   see the "As a Claude Code plugin" part of the README's integration
+   section for what `hooks/claude_code_pretooluse.py` actually gates.
 2. **A standalone Python runtime** (`src/tollgate/`, `hooks/`, `scripts/`)
    — the actual context and enforcement engine (context toolkit, Guardian,
    Waste Ledger, provider adapters, cost reporting). It has no dependency
    on Claude Code and can be installed and driven directly, e.g. from
    another agent framework, a CI pipeline, or a plain Python service — see
    the "Integrate Tollgate into your project" section of the main
-   [README](../README.md) for the two supported entry points.
+   [README](../README.md) for all three supported entry points.
 
 ## What is domain-agnostic (copy as-is)
 
@@ -39,7 +39,7 @@ This repository ships two things at once:
 |---|---|---|
 | `scripts/complexity_score.py` | Its `complexity_score` features (`ast_node_count`, `dependency_depth`, `transform_density`, `branch_density`, `external_system_count`, `unsupported_construct_count`) were chosen for legacy ETL/pipeline migration artifacts (Informatica, DataStage, SSIS). A different domain — e.g. React components, Terraform modules, API handlers — needs different structural evidence. | Keep the function signature and score range (`0-100`), replace the feature extraction. |
 | `platform_profiles.informatica_xml` / `.datastage` / `.ssis` in `config/tollgate-dispatch.yaml` | These are worked examples for the migration pilot this repo shipped with, not defaults every project needs. | Add one `platform_profiles.<your_artifact_type>` entry per artifact type your project handles; delete the migration-specific ones if irrelevant, or leave them as reference. |
-| Success metrics in `docs/ZWCA_BLUEPRINT.md` (`≥80% context reduction`, `<US$50/artifact`, `545 artifacts` rollout) | Calibrated against the original migration-factory baseline. | Re-run Phase 0 (baseline + calibration) for your own artifact population before trusting these numbers. |
+| Success metrics in `docs/ARCHITECTURE_BLUEPRINT.md` (`≥80% context reduction`, `<US$50/artifact`, `545 artifacts` rollout) | Calibrated against the original migration-factory baseline. | Re-run Phase 0 (baseline + calibration) for your own artifact population before trusting these numbers. |
 
 ## Proposed package structure
 
@@ -63,7 +63,7 @@ tollgate/                  # pip-installable, domain-agnostic
 <your-project>/                # per-project extension point
 ├── complexity_score.py       # domain-specific complexity scoring
 ├── tollgate-dispatch.yaml    # extends the default with your platform_profiles
-└── .claude-plugin/           # optional: wrap tollgate as a plugin, once it has a manifest
+└── .claude-plugin/           # optional: wrap your project as its own plugin
     ├── agents/
     └── skills/
 ```

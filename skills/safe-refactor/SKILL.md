@@ -1,26 +1,26 @@
 ---
 name: safe-refactor
-description: Refatoração estrutural multi-arquivo via AST (ast-grep rewrite) — renomear símbolos, migrar APIs e padrões de forma determinística. Use quando o usuário pedir rename/refactor que toca vários arquivos.
+description: Multi-file structural refactoring via AST (ast-grep rewrite) — rename symbols, migrate APIs and patterns deterministically. Use when the user asks for a rename/refactor that touches multiple files.
 ---
 
 # Safe Refactor (AST)
 
-Em vez de N edits do LLM (caros e sujeitos a erro), use rewrite estrutural determinístico.
+Instead of N LLM edits (expensive and error-prone), use a deterministic structural rewrite.
 
-## Fluxo
+## Flow
 
-1. **Preview** — sempre rode sem `-U` primeiro e mostre o diff ao usuário:
+1. **Preview** — always run without `-U` first and show the diff to the user:
    ```bash
    ast-grep run -p 'oldFunc($$$ARGS)' -r 'newFunc($$$ARGS)' --lang ts src/
    ```
-2. **Aplicar** após confirmação:
+2. **Apply** after confirmation:
    ```bash
    ast-grep run -p 'oldFunc($$$ARGS)' -r 'newFunc($$$ARGS)' --lang ts src/ -U
    ```
-3. **Validar** — rode a skill `agent-gate` (parse sintático) + testes do projeto (`npm test` / `pytest`).
-4. Casos com semântica de escopo (rename de variável local, shadowing): prefira o LSP/tsc do projeto ou revise manualmente os matches — ast-grep casa padrões, não resolve escopo.
+3. **Validate** — run the `agent-gate` skill (syntax parse) + the project's tests (`npm test` / `pytest`).
+4. Cases with scope semantics (local variable rename, shadowing): prefer the project's LSP/tsc, or review matches manually — ast-grep matches patterns, it doesn't resolve scope.
 
-## Exemplos de regras YAML (para refactors recorrentes)
+## Example YAML rules (for recurring refactors)
 ```yaml
 # rule.yml
 id: migrate-axios-to-fetch

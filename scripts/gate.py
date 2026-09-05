@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""agent-gate: validação sintática pós-geração via AST.
+"""agent-gate: post-generation syntax validation via AST.
 
-Uso: python3 scripts/gate.py <arquivo> [arquivo...]
-Sai com código 1 se qualquer arquivo não parseia.
+Usage: python3 scripts/gate.py <file> [file...]
+Exits with code 1 if any file fails to parse.
 """
 import ast
 import json
@@ -30,7 +30,7 @@ def check(path: Path) -> tuple[bool, str]:
                 capture_output=True, text=True,
             )
             return r.returncode == 0, "ast-grep parse ok" if r.returncode == 0 else r.stderr.strip()
-        return True, f"sem validador para {suffix} (pulado)"
+        return True, f"no validator for {suffix} (skipped)"
     except SyntaxError as e:
         return False, f"SyntaxError: {e}"
     except Exception as e:  # noqa: BLE001

@@ -7,7 +7,7 @@ from tollgate.governance.store.waste_ledger import LedgerEvent, WasteLedger
 
 
 class GuardianBlocked(RuntimeError):
-    """Raised when a provider call violates a mandatory ZWCA contract."""
+    """Raised when a provider call violates a mandatory Tollgate contract."""
 
 
 class Compressor(Protocol):
