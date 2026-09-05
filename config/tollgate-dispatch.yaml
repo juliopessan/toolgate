@@ -1,5 +1,5 @@
 version: 1
-policy_name: zwca-default
+policy_name: tollgate-default
 currency: USD
 
 scoring:

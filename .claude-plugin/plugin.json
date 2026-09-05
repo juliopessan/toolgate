@@ -1,0 +1,9 @@
+{
+  "name": "tollgate",
+  "description": "Deterministic admission gate for AI agents: scores, budgets, compresses and audits every candidate context before it reaches a provider.",
+  "version": "0.1.0",
+  "author": { "name": "juliopessan" },
+  "homepage": "https://github.com/juliopessan/context-ledger",
+  "repository": "https://github.com/juliopessan/context-ledger",
+  "license": "MIT"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "tollgate-marketplace",
+  "description": "Tollgate: a deterministic admission gate for AI agents.",
+  "owner": { "name": "juliopessan" },
+  "plugins": [
+    {
+      "name": "tollgate",
+      "source": "./",
+      "description": "Deterministic admission gate for AI agents: scores, budgets, compresses and audits every candidate context before it reaches a provider."
+    }
+  ]
+}

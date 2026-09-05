@@ -192,15 +192,48 @@ subprocess, or by importing `Guardian` directly if you're in Python — see
 `hooks/pre_call_guardian.py` for the ~15-line reference implementation)
 immediately before every provider call, and respecting its verdict.
 
-**If your harness is Claude Code specifically**, the natural place to wire
-this is a `PreToolUse` hook in your project's `hooks.json`/settings,
-pointed at the command above. That wiring is not shipped yet — today
-`hooks/hooks.json` in this repo only registers `telemetry.py` on
-`PostToolUse`; adding a `pre_call_guardian.py` entry on the request path is
-on you until this is packaged as a proper Claude Code plugin (there is no
-`.claude-plugin/plugin.json` in this repo yet).
+### 3. As a Claude Code plugin
 
-`complexity_score` and `tier` are not computed for you — see
+This repository is a valid Claude Code plugin (`.claude-plugin/plugin.json`):
+
+```bash
+claude --plugin-dir /path/to/tollgate
+```
+
+`hooks/hooks.json` registers `hooks/claude_code_pretooluse.py` on the
+`Task` matcher — the one `PreToolUse` payload that actually resembles
+context handed to another LLM turn (Claude Code doesn't expose a hook on
+its own model calls, so a subagent's prompt is the closest interception
+point available). It reads the real `PreToolUse` schema Claude Code sends
+(`tool_name`, `tool_input`, `session_id`, `cwd`, `tool_use_id` — not the
+custom envelope above), gates the subagent's `prompt` field through the
+same Guardian, and — when it compresses something — rewrites the prompt in
+place via the hook's `updatedInput` field, so the subagent actually runs on
+the smaller payload instead of the original:
+
+```json
+{
+  "hookSpecificOutput": {
+    "hookEventName": "PreToolUse",
+    "permissionDecision": "allow",
+    "permissionDecisionReason": "Tollgate: admitted (tier=large, score=100.0)",
+    "updatedInput": { "description": "...", "prompt": "[tollgate] truncated to fit ..." }
+  }
+}
+```
+
+This bridge deliberately does **not** reuse `config/tollgate-dispatch.yaml`'s
+Solar-to-Aurora tiers or `scripts/complexity_score.py` — those model how
+much LLM reasoning an artifact deserves, and a small Task prompt does not
+mean "give this zero tokens" the way a trivial migration lookup does. It
+uses its own three payload-size buckets instead (see the module docstring
+in `hooks/claude_code_pretooluse.py`). Extend the `Task` matcher to other
+tools (e.g. `mcp__.*`) if their payloads deserve the same gate — and if you
+want tier-based *model routing*, not just size-based compression, that
+still needs your own `complexity_score` per project (see below).
+
+`complexity_score` and `tier` in the `pre_call_guardian.py` contract above
+are not computed for you — see
 [`docs/EXTENDING.md`](docs/EXTENDING.md) for how to write the scoring
 function for your own artifact types.
 
