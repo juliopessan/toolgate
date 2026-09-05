@@ -1,6 +1,6 @@
 # Anthropic Provider Adapter
 
-`runtime/anthropic_provider.py` implements the `ProviderClient` contract with the official Anthropic Python SDK and Messages API.
+`src/tollgate/governance/runtime/anthropic_provider.py` implements the `ProviderClient` contract with the official Anthropic Python SDK and Messages API.
 
 ## Installation
 

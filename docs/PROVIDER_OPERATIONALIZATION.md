@@ -4,7 +4,7 @@ This slice turns the Guardian foundation into a provider-neutral operational bou
 
 ## Included
 
-- canonical tier caps loaded from `config/zwca-dispatch.yaml`;
+- canonical tier caps loaded from `config/tollgate-dispatch.yaml`;
 - Headroom, AST-aware and conservative compression adapters;
 - provider-neutral `GuardedProviderGateway`;
 - transactional budget reservations for parallel calls;

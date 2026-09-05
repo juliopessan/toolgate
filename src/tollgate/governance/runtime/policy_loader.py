@@ -14,7 +14,7 @@ def _load_yaml(path: Path) -> dict[str, Any]:
     try:
         import yaml  # type: ignore
     except ImportError as exc:
-        raise PolicyError("PyYAML is required to load ZWCA policy files") from exc
+        raise PolicyError("PyYAML is required to load tollgate policy files") from exc
     data = yaml.safe_load(path.read_text(encoding="utf-8"))
     if not isinstance(data, dict):
         raise PolicyError("policy root must be a mapping")

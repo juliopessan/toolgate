@@ -131,6 +131,79 @@ python3 scripts/complexity_score.py --ast-nodes 320 --dependency-depth 8 \
 python3 dashboard/generate_dashboard.py
 ```
 
+## Integrate Tollgate into your project
+
+There are two supported ways in, and they compose: use the context layer
+alone, the gate alone, or both together.
+
+### 1. As a Python library — `tollgate.context`
+
+For a Python project that just wants better context, without the
+governance layer:
+
+```bash
+pip install -e /path/to/tollgate   # or: pip install tollgate, once published
+```
+
+```python
+from tollgate.context import Headroom, index_path, pack_query
+
+headroom = Headroom(window=200_000, reserve_output=8_000)
+headroom.spend("conversation", 120_000)
+
+index = index_path("./src")
+context = pack_query("where is the retry backoff configured?",
+                      index, budget=6_000, headroom=headroom)
+your_llm_call(system_prompt, context.text)
+```
+
+No dependency on the governance layer, no database, no config file.
+
+### 2. As a language-agnostic pre-call gate — the hook contract
+
+For anything that isn't Python, or that wants the full admission →
+compression → audit contract in front of every provider call, shell out to
+`hooks/pre_call_guardian.py`. It reads one JSON object from stdin and
+writes an allow/block decision to stdout — exit `0` admitted, `2` blocked:
+
+```bash
+export TOLLGATE_DB=~/.tollgate/telemetry.db
+echo '{
+  "session_id": "session-001",
+  "project_id": "my-agent",
+  "artifact_id": "turn-042",
+  "payload": "...the candidate context your agent wants to send...",
+  "complexity_score": 34.2,
+  "tier": "horizon",
+  "provider": "anthropic",
+  "model": "claude-sonnet-5",
+  "estimated_cost_usd": 0.42
+}' | python3 hooks/pre_call_guardian.py
+```
+
+A blocked call returns `{"allow": false, "reason": "..."}` and exit code
+`2` — treat that as "do not call the provider," not as an error to retry
+past. An admitted call returns the (possibly compressed) `payload` your
+agent should actually send, plus `admitted_tokens` / `rejected_tokens` for
+your own logging.
+
+Wiring this into your own agent loop means calling the hook (as a
+subprocess, or by importing `Guardian` directly if you're in Python — see
+`hooks/pre_call_guardian.py` for the ~15-line reference implementation)
+immediately before every provider call, and respecting its verdict.
+
+**If your harness is Claude Code specifically**, the natural place to wire
+this is a `PreToolUse` hook in your project's `hooks.json`/settings,
+pointed at the command above. That wiring is not shipped yet — today
+`hooks/hooks.json` in this repo only registers `telemetry.py` on
+`PostToolUse`; adding a `pre_call_guardian.py` entry on the request path is
+on you until this is packaged as a proper Claude Code plugin (there is no
+`.claude-plugin/plugin.json` in this repo yet).
+
+`complexity_score` and `tier` are not computed for you — see
+[`docs/EXTENDING.md`](docs/EXTENDING.md) for how to write the scoring
+function for your own artifact types.
+
 ## Status
 
 Plane 2 (Context) is wired directly to `tollgate.context`'s pack/headroom
