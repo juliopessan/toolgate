@@ -2,9 +2,9 @@ import os
 import tempfile
 import unittest
 
-from context_ledger.context.chunking import Chunk
-from context_ledger.context.headroom import Headroom
-from context_ledger.context.pack import (
+from tollgate.context.chunking import Chunk
+from tollgate.context.headroom import Headroom
+from tollgate.context.pack import (
     index_path,
     iter_source_files,
     pack_files,
@@ -12,8 +12,8 @@ from context_ledger.context.pack import (
     pack_query,
     plan_lanes,
 )
-from context_ledger.context.semantic import Hit
-from context_ledger.context.tokens import estimate_tokens
+from tollgate.context.semantic import Hit
+from tollgate.context.tokens import estimate_tokens
 
 
 def make_hit(chunk_id, tokens, score, path="a.py", symbol=None, start=1):

@@ -9,7 +9,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
-from context_ledger.governance.store import db  # noqa: E402
+from tollgate.governance.store import db  # noqa: E402
 
 GROUPS = {"project": "project", "model": "model", "day": "date(ts)"}
 
@@ -38,7 +38,7 @@ def main():
     ).fetchall()
 
     total = sum(r[5] or 0 for r in rows)
-    print(f"\n== agent-finops · custo últimos {args.days} dias · por {args.by} ==\n")
+    print(f"\n== tollgate · custo últimos {args.days} dias · por {args.by} ==\n")
     print(f"{'grupo':<32}{'in':>12}{'out':>12}{'cache_r':>12}{'cache_w':>12}{'USD':>10}{'msgs':>7}")
     for grp, i, o, cr, cw, usd, n in rows:
         print(f"{str(grp)[:31]:<32}{i or 0:>12,}{o or 0:>12,}{cr or 0:>12,}{cw or 0:>12,}{usd or 0:>10.2f}{n:>7}")

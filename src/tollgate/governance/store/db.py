@@ -1,10 +1,10 @@
-"""Store central do agent-finops: SQLite em ~/.agent-finops/telemetry.db."""
+"""Store central do tollgate: SQLite em ~/.tollgate/telemetry.db."""
 import json
 import os
 import sqlite3
 from pathlib import Path
 
-DB_DIR = Path(os.environ.get("AGENT_FINOPS_HOME", Path.home() / ".agent-finops"))
+DB_DIR = Path(os.environ.get("TOLLGATE_HOME", Path.home() / ".tollgate"))
 DB_PATH = DB_DIR / "telemetry.db"
 PRICING_PATH = Path(__file__).parent / "pricing.json"
 

@@ -3,9 +3,9 @@ import sqlite3
 import tempfile
 import unittest
 
-from context_ledger.context.chunking import chunk_source
-from context_ledger.context.pack import index_path, iter_source_files, load_chunks, open_store
-from context_ledger.context.store import Store, default_store_path, fingerprint
+from tollgate.context.chunking import chunk_source
+from tollgate.context.pack import index_path, iter_source_files, load_chunks, open_store
+from tollgate.context.store import Store, default_store_path, fingerprint
 
 SOURCE = '''\
 """Payments."""
@@ -254,7 +254,7 @@ class TestPersistedSearch(StoreTestBase):
                 '    """Exchange the refresh token."""\n'
                 "    return client.post('/oauth/token')\n"
             )
-        from context_ledger.context.pack import iter_source_files, sync_index
+        from tollgate.context.pack import iter_source_files, sync_index
 
         sync_index(iter_source_files(self.root), self.root, self.store)
 
@@ -285,7 +285,7 @@ class TestPersistedSearch(StoreTestBase):
         self.assertIsInstance(self.store.search("not and or charge", k=3), list)
 
     def test_reindexing_a_file_does_not_leave_stale_rows(self):
-        from context_ledger.context.pack import iter_source_files, sync_index
+        from tollgate.context.pack import iter_source_files, sync_index
 
         before = self.store.indexed_chunk_count()
         with open(self.file, "w") as handle:
@@ -295,7 +295,7 @@ class TestPersistedSearch(StoreTestBase):
         self.assertEqual(self.store.search("charge a card", k=3), [])
 
     def test_deleting_a_file_removes_it_from_search(self):
-        from context_ledger.context.pack import iter_source_files, sync_index
+        from tollgate.context.pack import iter_source_files, sync_index
 
         os.remove(os.path.join(self.root, "src", "auth.py"))
         sync_index(iter_source_files(self.root), self.root, self.store)
@@ -304,7 +304,7 @@ class TestPersistedSearch(StoreTestBase):
 
 class TestStoreIndexParity(StoreTestBase):
     def test_the_persisted_index_answers_like_the_in_memory_one(self):
-        from context_ledger.context.pack import index_path
+        from tollgate.context.pack import index_path
 
         memory = index_path(self.root)
         persisted = index_path(self.root, store=self.store)
@@ -315,14 +315,14 @@ class TestStoreIndexParity(StoreTestBase):
         )
 
     def test_a_warm_run_reparses_nothing(self):
-        from context_ledger.context.pack import iter_source_files, sync_index
+        from tollgate.context.pack import iter_source_files, sync_index
 
         files = iter_source_files(self.root)
         self.assertGreater(sync_index(files, self.root, self.store), 0)
         self.assertEqual(sync_index(files, self.root, self.store), 0, "unchanged tree must be a no-op")
 
     def test_an_edited_file_is_the_only_thing_reparsed(self):
-        from context_ledger.context.pack import iter_source_files, sync_index
+        from tollgate.context.pack import iter_source_files, sync_index
 
         files = iter_source_files(self.root)
         sync_index(files, self.root, self.store)

@@ -4,7 +4,7 @@ import os
 from dataclasses import dataclass
 from typing import Any
 
-from context_ledger.governance.runtime.provider_gateway import ProviderResponse
+from tollgate.governance.runtime.provider_gateway import ProviderResponse
 
 
 class OpenAIProviderError(RuntimeError):

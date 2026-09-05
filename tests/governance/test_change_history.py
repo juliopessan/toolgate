@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from context_ledger.governance.store.change_history import ArtifactChange, ChangeHistory
+from tollgate.governance.store.change_history import ArtifactChange, ChangeHistory
 
 
 @pytest.fixture()

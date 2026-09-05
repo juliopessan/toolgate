@@ -16,7 +16,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
-from context_ledger.governance.store import db  # noqa: E402
+from tollgate.governance.store import db  # noqa: E402
 
 SKIP_DIRS = {"node_modules", ".git", "__pycache__", ".venv", "venv", "dist", "build", "worktrees"}
 MODEL_RE = re.compile(r"model:\s*([\w.\-]+)")

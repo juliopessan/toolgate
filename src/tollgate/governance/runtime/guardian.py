@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass, replace
 from typing import Callable, Protocol
 
-from context_ledger.governance.store.waste_ledger import LedgerEvent, WasteLedger
+from tollgate.governance.store.waste_ledger import LedgerEvent, WasteLedger
 
 
 class GuardianBlocked(RuntimeError):

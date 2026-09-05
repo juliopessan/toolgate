@@ -1,6 +1,6 @@
 import unittest
 
-from context_ledger.context.astx import (
+from tollgate.context.astx import (
     detect_language,
     extract_symbols,
     find_symbol,

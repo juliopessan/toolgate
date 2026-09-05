@@ -1,7 +1,7 @@
 import unittest
 
-from context_ledger.context.chunking import chunk_source
-from context_ledger.context.tokens import estimate_tokens
+from tollgate.context.chunking import chunk_source
+from tollgate.context.tokens import estimate_tokens
 
 SOURCE = '''\
 import os

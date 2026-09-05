@@ -1,6 +1,6 @@
 # Zero-Waste Context Architecture (ZWCA)
 
-> Canonical architecture for turning `agent-finops` from a cost dashboard into an enforceable context-efficiency runtime.
+> Canonical architecture for turning `tollgate` from a cost dashboard into an enforceable context-efficiency runtime.
 
 ## Decision
 
@@ -230,4 +230,4 @@ Exit: A/B cohort of 100 artifacts, >=85% blended reduction, <US$50/artifact and 
 
 ## Naming
 
-Keep `agent-finops` as the repository and distribution identity for compatibility. Use **ZWCA Runtime** as the architecture name until product branding is decided. A brand such as “Orange DNA” can be introduced later as a presentation layer without contaminating schemas, APIs or package names.
+Keep `tollgate` as the repository and distribution identity for compatibility. Use **ZWCA Runtime** as the architecture name until product branding is decided. A brand such as “Orange DNA” can be introduced later as a presentation layer without contaminating schemas, APIs or package names.

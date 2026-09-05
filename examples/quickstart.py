@@ -9,9 +9,9 @@ import sys
 # Anchor to the repository, not to the caller's working directory, so the
 # walkthrough runs from anywhere.
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, ROOT)
+sys.path.insert(0, os.path.join(ROOT, "src"))
 
-from tools_tokens import (
+from tollgate.context import (
     Headroom,
     Lane,
     chunk_source,
@@ -22,7 +22,7 @@ from tools_tokens import (
     slice_symbol,
 )
 
-TARGET = sys.argv[1] if len(sys.argv) > 1 else os.path.join(ROOT, "tools_tokens")
+TARGET = sys.argv[1] if len(sys.argv) > 1 else os.path.join(ROOT, "src", "tollgate", "context")
 
 
 def rule(title):
@@ -30,7 +30,7 @@ def rule(title):
 
 
 rule("1. Tokens - what does it cost?")
-with open(os.path.join(ROOT, "tools_tokens", "headroom.py"), encoding="utf-8") as handle:
+with open(os.path.join(ROOT, "src", "tollgate", "context", "headroom.py"), encoding="utf-8") as handle:
     source = handle.read()
 print(f"headroom.py is {estimate_tokens(source):,} tokens to read in full")
 

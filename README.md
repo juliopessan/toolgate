@@ -1,15 +1,15 @@
-# Context Ledger
+# Tollgate
 
-> **Every candidate token must pass three gates: Admission — does it deserve to
-> enter? Compression — can it be smaller? Audit — did it generate accepted
-> value?**
+> Every candidate token must pass three gates: **Admission** — does it deserve
+> to enter? **Compression** — can it be smaller? **Audit** — did it generate
+> accepted value?
 
-`context-ledger` unifies two previously separate projects into one runtime:
-a **context toolkit** (what goes in the window — tokens, headroom, AST
-skeletons, chunking, semantic retrieval, packing, persistence) and a
-**FinOps governance runtime** (what is allowed to leave the window — a
-deterministic Guardian that scores, tiers, budgets and audits every call
-before a provider ever sees it).
+Agents burn tokens on context nobody asked for — whole files instead of the
+one function that matters, unscored payloads sent straight to a frontier
+model, no record of what was actually worth paying for. Tollgate is a
+deterministic gate that sits in front of every provider call: it scores what
+an agent wants to send, decides how much of it earns entry, and keeps an
+auditable ledger of what was admitted, rejected and why.
 
 Not zero token usage. **Zero unjustified or unaccounted token consumption.**
 
@@ -17,36 +17,35 @@ Not zero token usage. **Zero unjustified or unaccounted token consumption.**
 pip install -e .
 ```
 
-## Two halves, one ledger
+## Two layers, one gate
 
 ```text
 ┌──────────────────────────────────────────────────────────────┐
-│  context_ledger.context      "what goes in the window?"      │
+│  tollgate.context      "what goes in the window?"            │
 │  tokens · headroom · astx · chunking · semantic · pack · store│
 ├──────────────────────────────────────────────────────────────┤
-│  context_ledger.governance    "what earns the call?"          │
+│  tollgate.governance    "what earns the call?"                │
 │  Guardian · Waste Ledger · thermal-tier dispatch · budgets    │
 └──────────────────────────────────────────────────────────────┘
 ```
 
-### `context_ledger.context` — the seven layers
+### `tollgate.context` — the seven layers
 
-Formerly [Tools-Tokens](https://github.com/juliopessan/Tools-Tokens). Zero
-runtime dependencies. Measured on real repositories, reading a **skeleton
-instead of a whole file** costs ~87% fewer tokens.
+Zero runtime dependencies. Measured on real repositories, reading a
+**skeleton instead of a whole file** costs ~87% fewer tokens.
 
 | Layer | Module | What it answers |
 |---|---|---|
-| Tokens | `context_ledger.context.tokens` | What does this cost? |
-| Headroom | `context_ledger.context.headroom` | What can I still afford? |
-| Structure | `context_ledger.context.astx` | What is worth quoting? |
-| Chunking | `context_ledger.context.chunking` | How do I cut it without breaking it? |
-| Semantic | `context_ledger.context.semantic` | What is relevant? |
-| Pack | `context_ledger.context.pack` | What actually gets sent — and can I cite it? |
-| Persistence | `context_ledger.context.store` | What can I avoid recomputing, and what did it actually save? |
+| Tokens | `tollgate.context.tokens` | What does this cost? |
+| Headroom | `tollgate.context.headroom` | What can I still afford? |
+| Structure | `tollgate.context.astx` | What is worth quoting? |
+| Chunking | `tollgate.context.chunking` | How do I cut it without breaking it? |
+| Semantic | `tollgate.context.semantic` | What is relevant? |
+| Pack | `tollgate.context.pack` | What actually gets sent — and can I cite it? |
+| Persistence | `tollgate.context.store` | What can I avoid recomputing, and what did it actually save? |
 
 ```python
-from context_ledger.context import Headroom, index_path, pack_query
+from tollgate.context import Headroom, index_path, pack_query
 
 headroom = Headroom(window=200_000, reserve_output=8_000)
 headroom.spend("conversation", 120_000)
@@ -57,18 +56,17 @@ context = pack_query("where is the retry backoff configured?", index,
 print(context.text)
 ```
 
-CLI: `context-ledger count|skeleton|symbol|outline|search|pack|headroom ...`
+CLI: `tollgate count|skeleton|symbol|outline|search|pack|headroom ...`
 (every subcommand takes `--json`).
 
-### `context_ledger.governance` — the four planes
+### `tollgate.governance` — the four planes
 
-Formerly [agent-finops-ZWCA](https://github.com/juliopessan/agent-finops-ZWCA).
 A deterministic runtime contract enforced before any provider call:
 
 ```text
 PLANE 4 — Governance & Observability   Budget · Waste Ledger · Decision Log · Change History
 PLANE 3 — Decision                     Complexity score · thermal tier · model routing
-PLANE 2 — Context                      (now backed directly by context_ledger.context above)
+PLANE 2 — Context                      Admission backed directly by tollgate.context
 PLANE 1 — Deterministic floor          Everything that does not require an LLM executes here
 ```
 
@@ -83,7 +81,7 @@ Runtime contract:
 7. Measured, estimated and counterfactual evidence never mix.
 8. Every admitted token has an auditable purpose and outcome.
 
-Thermal Gradient × RTK tiers (`config/zwca-dispatch.yaml`):
+Thermal Gradient × RTK tiers (`config/tollgate-dispatch.yaml`):
 
 | Tier | Score | Execution policy |
 |---|---:|---|
@@ -98,36 +96,36 @@ Pre-call hook contract (`hooks/pre_call_guardian.py`, stdin/stdout JSON,
 exit `0` admitted / `2` blocked):
 
 ```bash
-export AGENT_FINOPS_DB=~/.agent-finops/telemetry.db
+export TOLLGATE_DB=~/.tollgate/telemetry.db
 cat request.json | python3 hooks/pre_call_guardian.py
 ```
 
 ## Repository layout
 
 ```text
-context-ledger/
-├── src/context_ledger/
-│   ├── context/        # CORE — tokens, headroom, astx, chunking, semantic, pack, store
+tollgate/
+├── src/tollgate/
+│   ├── context/        # tokens, headroom, astx, chunking, semantic, pack, store
 │   └── governance/
 │       ├── runtime/     # Guardian, provider gateway, provider adapters
 │       └── store/       # waste ledger, decision log, change history, budget reservations
 ├── hooks/               # pre-call interceptor (stdin/stdout contract)
-├── config/              # thermal-tier dispatch policy (zwca-dispatch.yaml)
+├── config/              # thermal-tier dispatch policy
 ├── schemas/             # JSON Schemas for the ledger, decision log, change history
-├── scripts/             # cost_report, rightsizing, gate, zwca_score, sync_registry
-├── dashboard/           # self-contained HTML dashboard generator (Ledger design system)
+├── scripts/             # cost_report, rightsizing, gate, complexity scoring, sync_registry
+├── dashboard/           # self-contained HTML dashboard generator
 ├── docs/                # architecture, extension and operationalization notes
-├── benchmarks/          # tools-tokens harvest benchmark
+├── benchmarks/          # context-layer benchmark harness
 └── tests/
-    ├── context/         # ported from Tools-Tokens
-    └── governance/      # ported from agent-finops-ZWCA
+    ├── context/
+    └── governance/
 ```
 
 ## Quick start
 
 ```bash
 python3 -m pytest tests/
-python3 scripts/zwca_score.py --ast-nodes 320 --dependency-depth 8 \
+python3 scripts/complexity_score.py --ast-nodes 320 --dependency-depth 8 \
   --transform-density 0.72 --branch-density 0.25 \
   --external-systems 3 --unsupported-constructs 1
 python3 dashboard/generate_dashboard.py
@@ -135,15 +133,13 @@ python3 dashboard/generate_dashboard.py
 
 ## Status
 
-Both halves ship with passing test suites (210+ tests) migrated verbatim
-from their origin repositories, re-pointed at the unified `context_ledger`
-package. The next step documented in
-[`docs/EXTENDING.md`](docs/EXTENDING.md) — wiring Plane 2 (Context) directly
-to the `context_ledger.context` pack/headroom primitives instead of the
-placeholder AST admission described there — is the first integration
-milestone, not yet done.
+Plane 2 (Context) is wired directly to `tollgate.context`'s pack/headroom
+primitives — an oversized candidate payload is compressed by packing it
+through a query-aware budget instead of a naive truncation. See
+[`docs/EXTENDING.md`](docs/EXTENDING.md) for what's still domain-specific
+versus reusable as-is.
 
-Target metrics below are acceptance criteria from the original ZWCA pilot,
+Target metrics below are acceptance criteria from an original pilot,
 **not current production claims** — recalibrate against your own Phase 0
 baseline.
 
@@ -158,5 +154,4 @@ baseline.
 
 ## License
 
-MIT — see [LICENSE](LICENSE). Both origin projects (Tools-Tokens,
-agent-finops-ZWCA) were MIT-licensed under the same author.
+MIT — see [LICENSE](LICENSE).

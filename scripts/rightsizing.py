@@ -5,7 +5,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
-from context_ledger.governance.store import db  # noqa: E402
+from tollgate.governance.store import db  # noqa: E402
 
 
 def analyze(conn, days: int) -> list[dict]:

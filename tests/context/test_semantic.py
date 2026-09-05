@@ -1,7 +1,7 @@
 import unittest
 
-from context_ledger.context.chunking import chunk_source
-from context_ledger.context.semantic import (
+from tollgate.context.chunking import chunk_source
+from tollgate.context.semantic import (
     HybridIndex,
     LexicalIndex,
     VectorIndex,

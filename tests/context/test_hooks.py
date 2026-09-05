@@ -4,9 +4,9 @@ import sys
 import tempfile
 import unittest
 
-from context_ledger.context.cli import main
-from context_ledger.context.headroom import Headroom
-from context_ledger.context.hooks import run_hook, suggest_for_read, suggest_for_search
+from tollgate.context.cli import main
+from tollgate.context.headroom import Headroom
+from tollgate.context.hooks import run_hook, suggest_for_read, suggest_for_search
 
 
 class HookTestBase(unittest.TestCase):
@@ -221,9 +221,9 @@ class TestStoreBackedHook(HookTestBase):
     """The ledger only records what actually happened."""
 
     def test_an_offer_is_recorded_as_an_offer_not_a_saving(self):
-        from context_ledger.context.headroom import Headroom
-        from context_ledger.context.hooks import suggest_for_read
-        from context_ledger.context.pack import open_store
+        from tollgate.context.headroom import Headroom
+        from tollgate.context.hooks import suggest_for_read
+        from tollgate.context.pack import open_store
 
         store = open_store(self.root)
         headroom = Headroom(window=100_000, reserve_output=0, safety_margin=0.0)
@@ -238,8 +238,8 @@ class TestStoreBackedHook(HookTestBase):
         store.close()
 
     def test_a_host_reporting_acceptance_turns_it_into_a_saving(self):
-        from context_ledger.context.hooks import run_hook
-        from context_ledger.context.pack import open_store
+        from tollgate.context.hooks import run_hook
+        from tollgate.context.pack import open_store
 
         store = open_store(self.root)
         run_hook(
@@ -251,7 +251,7 @@ class TestStoreBackedHook(HookTestBase):
         store.close()
 
     def test_the_hook_works_with_no_store_at_all(self):
-        from context_ledger.context.hooks import run_hook
+        from tollgate.context.hooks import run_hook
 
         result = run_hook({"tool": "Read", "input": {"file_path": "big.py"}, "context_used": 190_000},
                           root=self.root, store=None)

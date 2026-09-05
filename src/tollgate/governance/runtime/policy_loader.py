@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-from context_ledger.governance.runtime.guardian import TierPolicy
+from tollgate.governance.runtime.guardian import TierPolicy
 
 
 class PolicyError(ValueError):

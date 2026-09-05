@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from context_ledger.governance.store.decision_log import Decision, DecisionLog
+from tollgate.governance.store.decision_log import Decision, DecisionLog
 
 
 @pytest.fixture()

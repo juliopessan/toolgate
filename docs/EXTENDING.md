@@ -46,7 +46,7 @@ directly when it isn't — the enforcement contract (admission → compression
 The long-term shape, once the core is extracted for reuse across projects:
 
 ```text
-agent-finops-core/            # pip-installable, domain-agnostic
+tollgate-core/            # pip-installable, domain-agnostic
 ├── runtime/                  # guardian, provider adapters, compressors
 ├── store/                    # waste ledger, budgets, migrations
 ├── hooks/                    # pre_call_guardian.py
@@ -60,7 +60,7 @@ agent-finops-core/            # pip-installable, domain-agnostic
 <your-project>/                # per-project extension point
 ├── zwca_score.py             # domain-specific complexity scoring
 ├── zwca-dispatch.yaml        # extends the default with your platform_profiles
-└── .claude-plugin/           # optional: wrap agent-finops-core as a plugin
+└── .claude-plugin/           # optional: wrap tollgate-core as a plugin
     ├── agents/
     └── skills/
 ```

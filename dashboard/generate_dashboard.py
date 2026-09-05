@@ -13,7 +13,7 @@ from pathlib import Path
 from string import Template
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
-from context_ledger.governance.store import db  # noqa: E402
+from tollgate.governance.store import db  # noqa: E402
 from waste_ledger_metrics import load_waste_ledger_metrics  # noqa: E402
 
 
@@ -38,7 +38,7 @@ def main():
     saved = sum(r[2] or 0 for r in savings)
     conn.close()
 
-    ledger_db = Path(os.environ.get("AGENT_FINOPS_DB", "~/.agent-finops/telemetry.db")).expanduser()
+    ledger_db = Path(os.environ.get("TOLLGATE_DB", "~/.tollgate/telemetry.db")).expanduser()
     try:
         ledger = load_waste_ledger_metrics(ledger_db)
     except Exception:
@@ -81,7 +81,7 @@ def main():
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Context Ledger · Waste Ledger Dashboard</title>
+<title>Tollgate · Waste Ledger Dashboard</title>
 <style>
   :root{
     --bg:#F0EEE6; --ink:#15140F; --ink-soft:#5B584E; --line:#D8D4C6; --line-strong:#B8B39F;
@@ -143,7 +143,7 @@ def main():
 </head>
 <body>
 <nav class="top">
-  <div class="brand"><span class="mark">C</span> CONTEXT LEDGER</div>
+  <div class="brand"><span class="mark">T</span> TOLLGATE</div>
   <div class="badge">WASTE LEDGER DASHBOARD</div>
 </nav>
 <div class="wrap">
@@ -207,7 +207,7 @@ def main():
   </section>
 </div>
 <footer>
-  <span>context-ledger runtime</span>
+  <span>tollgate runtime</span>
   <span>Gerado localmente em $today</span>
   <span>Deterministic before probabilistic.</span>
 </footer>

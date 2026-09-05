@@ -208,7 +208,7 @@ def trim_to_budget(
 
     suffix = f" {hint}" if hint else ""
     marker = (
-        f"[tools-tokens] truncated to fit {budget_tokens} tokens "
+        f"[tollgate] truncated to fit {budget_tokens} tokens "
         f"({total} estimated, {len(lines)} lines, keeping {keep}).{suffix}"
     )
     assembled = f"{marker}\n" + "\n".join(kept) if keep == "tail" else "\n".join(kept) + f"\n{marker}"

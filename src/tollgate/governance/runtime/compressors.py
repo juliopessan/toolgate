@@ -21,6 +21,28 @@ class ConservativeCompressor:
 
 
 @dataclass
+class ContextCompressor:
+    """Plane 2 admission compressor, backed by tollgate.context.
+
+    Trims on whole-line boundaries instead of an arbitrary character cut, and
+    keeps a head and a tail by default so setup and failure (the two ends that
+    usually matter) both survive a squeeze. Always reports how much text was
+    dropped, in the payload itself, so a truncation the caller cannot see is
+    never silent.
+    """
+
+    keep: str = "both"
+
+    def compress(self, payload: str, target_tokens: int) -> str:
+        from tollgate.context.tokens import trim_to_budget
+
+        return trim_to_budget(payload, target_tokens, keep=self.keep).text
+
+    def __call__(self, payload: str, target_tokens: int) -> str:
+        return self.compress(payload, target_tokens)
+
+
+@dataclass
 class HeadroomCompressor:
     """Inline adapter for the installed Headroom Python SDK.
 

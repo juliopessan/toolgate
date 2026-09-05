@@ -5,8 +5,8 @@ from pathlib import Path
 
 import pytest
 
-from context_ledger.governance.runtime.guardian import CallEnvelope, Guardian, GuardianBlocked, TierPolicy
-from context_ledger.governance.store.waste_ledger import WasteLedger
+from tollgate.governance.runtime.guardian import CallEnvelope, Guardian, GuardianBlocked, TierPolicy
+from tollgate.governance.store.waste_ledger import WasteLedger
 
 
 def count_tokens(value: str) -> int:

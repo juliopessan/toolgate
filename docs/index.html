@@ -1,4 +1,4 @@
-<title>Context Ledger</title>
+<title>Tollgate</title>
 <style>
   :root{
     --bg:#F0EEE6; --bg-card:#14140F; --ink:#15140F; --ink-soft:#5B584E;
@@ -94,9 +94,9 @@
 
 <nav class="top">
   <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;width:100%;">
-    <div class="brand"><span class="mark">C</span> CONTEXT LEDGER</div>
+    <div class="brand"><span class="mark">T</span> TOLLGATE</div>
     <div class="nav-links">
-      <a href="#origins">Two halves</a>
+      <a href="#origins">Architecture</a>
       <a href="#context">Context layer</a>
       <a href="#governance">Governance layer</a>
       <a href="#proof">The proof</a>
@@ -111,15 +111,14 @@
   <section class="hero" style="border-top:none; padding-top:10px;">
     <div>
       <div class="eyebrow"><span class="rule"></span> WHAT GOES IN THE WINDOW, WHAT EARNS THE CALL</div>
-      <h1 class="headline">One ledger for<br>every token an<br><em>agent ever spends.</em></h1>
-      <p class="lede">Most agent stacks solve "what goes in the window" and "what
-        earns the call" as two separate, uncoordinated projects. Context Ledger
-        is one runtime for both: a scored context toolkit that decides what's
-        worth sending, and a deterministic Guardian that decides what's worth
-        paying for — before either one reaches a provider.</p>
-      <p class="lede">Unifies two MIT-licensed projects by the same author —
-        <b>Tools-Tokens</b> (context) and <b>agent-finops-ZWCA</b> (governance)
-        — under one package, one test suite, one design system.</p>
+      <h1 class="headline">Nothing gets<br>through without<br><em>paying its toll.</em></h1>
+      <p class="lede">Agents send whole files to answer one-line questions, and
+        pay for every token nobody asked for. Tollgate scores every candidate
+        payload, decides how much of it earns entry, and audits what happened
+        after — before a single token reaches a provider.</p>
+      <p class="lede">One scored context toolkit deciding <b>what's worth
+        sending</b>, and one deterministic gate deciding <b>what's worth
+        paying for</b> — in front of every call, not after the invoice.</p>
       <div class="cta-row">
         <a class="btn-primary" href="#adopt">pip install -e . ↓</a>
         <a class="btn-ghost" href="#proof">See the waste ledger ↗</a>
@@ -128,7 +127,7 @@
 
     <div class="ledger">
       <div class="ledger-head">
-        <span><span class="dot"></span><span class="title">CONTEXT LEDGER</span></span>
+        <span><span class="dot"></span><span class="title">WASTE LEDGER</span></span>
         <span>9,400 tokens · tier horizon</span>
       </div>
       <div class="row-label"><span>Candidate · what the agent asked for</span><span class="num orange">9,400</span></div>
@@ -145,7 +144,7 @@
         <span class="check">✓</span>
         <div>
           <div class="callout-title">MEASURED, NOT ESTIMATED</div>
-          <div class="callout-body">This run comes from <code>context_ledger.governance.runtime.guardian</code>
+          <div class="callout-body">This run comes from <code>tollgate.governance.runtime.guardian</code>
             against an in-memory Waste Ledger. Re-run it and check.</div>
         </div>
       </div>
@@ -157,11 +156,11 @@
   </section>
 
   <section id="origins">
-    <div class="sec-head"><span class="sec-num">01</span><h2>Two halves, merged</h2></div>
+    <div class="sec-head"><span class="sec-num">01</span><h2>One gate, two layers</h2></div>
     <div class="halves">
       <div class="half">
-        <div class="tag">FORMERLY TOOLS-TOKENS</div>
-        <h3>context_ledger.context</h3>
+        <div class="tag">WHAT GOES IN THE WINDOW</div>
+        <h3>tollgate.context</h3>
         <div class="layer-row"><span>tokens</span><span>What does this cost?</span></div>
         <div class="layer-row"><span>headroom</span><span>What can I still afford?</span></div>
         <div class="layer-row"><span>astx</span><span>What is worth quoting?</span></div>
@@ -171,11 +170,11 @@
         <div class="layer-row"><span>store</span><span>What can I avoid recomputing?</span></div>
       </div>
       <div class="half">
-        <div class="tag">FORMERLY AGENT-FINOPS-ZWCA</div>
-        <h3>context_ledger.governance</h3>
+        <div class="tag">WHAT EARNS THE CALL</div>
+        <h3>tollgate.governance</h3>
         <div class="layer-row"><span>Plane 4</span><span>Budget · Waste Ledger · Decision Log</span></div>
         <div class="layer-row"><span>Plane 3</span><span>Complexity score · thermal tier · routing</span></div>
-        <div class="layer-row"><span>Plane 2</span><span>Now backed by context_ledger.context</span></div>
+        <div class="layer-row"><span>Plane 2</span><span>Now backed by tollgate.context</span></div>
         <div class="layer-row"><span>Plane 1</span><span>Deterministic floor — no LLM required</span></div>
         <div class="layer-row"><span>Guardian</span><span>No score, no call — fail-closed by default</span></div>
       </div>
@@ -184,7 +183,7 @@
 
   <section id="context">
     <div class="sec-head"><span class="sec-num">02</span><h2>Context layer, in one call</h2></div>
-    <div class="code" style="max-width:820px;">from context_ledger.context import Headroom, index_path, pack_query
+    <div class="code" style="max-width:820px;">from tollgate.context import Headroom, index_path, pack_query
 
 headroom = Headroom(window=200_000, reserve_output=8_000)
 headroom.spend("conversation", 120_000)
@@ -232,11 +231,11 @@ print(context.manifest())  <span style="color:#7A7869"># and the full account of
     <div class="sec-head"><span class="sec-num">05</span><h2>Limits — read before you adopt</h2></div>
     <div class="limits-list">
       <div class="limit-row"><span class="x">×</span><p><b>Not yet wired end-to-end.</b> The governance layer's Plane 2
-        (Context) still needs to be pointed at <code>context_ledger.context</code>'s
+        (Context) still needs to be pointed at <code>tollgate.context</code>'s
         pack/headroom primitives instead of its own placeholder — that's the
         first integration milestone, tracked in <code>docs/EXTENDING.md</code>.</p></div>
       <div class="limit-row"><span class="x">×</span><p><b>Targets, not production claims.</b> The 85–90% blended
-        reduction figures were calibrated against the original ZWCA pilot —
+        reduction figures were calibrated against the original pilot —
         re-run your own Phase 0 baseline.</p></div>
       <div class="limit-row"><span class="x">×</span><p><b>No unlimited retries or automatic frontier escalation.</b>
         A blocked call stays blocked.</p></div>
@@ -252,7 +251,7 @@ $ cat request.json | python3 hooks/pre_call_guardian.py</div>
   </section>
 
   <footer>
-    <span>context-ledger</span>
+    <span>tollgate</span>
     <span>MIT License</span>
     <span>Deterministic before probabilistic.</span>
   </footer>

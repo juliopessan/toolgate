@@ -12,7 +12,7 @@ every agent has to answer on every turn: *what goes in the window?*
 
 Quick start::
 
-    from context_ledger.context import Headroom, index_path, pack_query
+    from tollgate.context import Headroom, index_path, pack_query
 
     headroom = Headroom(window=200_000, reserve_output=8_000)
     headroom.spend("conversation", 120_000)

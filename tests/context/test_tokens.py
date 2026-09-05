@@ -1,6 +1,6 @@
 import unittest
 
-from context_ledger.context.tokens import (
+from tollgate.context.tokens import (
     detect_profile,
     estimate_cost,
     estimate_tokens,
@@ -91,7 +91,7 @@ class TestTrim(unittest.TestCase):
 
     def test_marker_is_always_present_and_carries_the_hint(self):
         result = trim_to_budget(self.text, 200, hint="Use --grep to narrow.")
-        self.assertIn("[tools-tokens] truncated", result.text)
+        self.assertIn("[tollgate] truncated", result.text)
         self.assertIn("Use --grep to narrow.", result.text)
 
     def test_single_line_longer_than_the_budget_still_terminates(self):

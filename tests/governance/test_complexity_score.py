@@ -1,4 +1,4 @@
-from scripts.zwca_score import ComplexityFeatures, calculate_score, tier_for_score
+from scripts.complexity_score import ComplexityFeatures, calculate_score, tier_for_score
 
 
 def test_empty_structural_features_route_to_solar() -> None:

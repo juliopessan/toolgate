@@ -7,9 +7,9 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
-from context_ledger.governance.runtime.anthropic_provider import AnthropicMessagesProvider, AnthropicPricing  # noqa: E402
-from context_ledger.governance.runtime.compressors import HeadroomCompressor  # noqa: E402
-from context_ledger.governance.runtime.openai_provider import OpenAIPricing, OpenAIResponsesProvider  # noqa: E402
+from tollgate.governance.runtime.anthropic_provider import AnthropicMessagesProvider, AnthropicPricing  # noqa: E402
+from tollgate.governance.runtime.compressors import HeadroomCompressor  # noqa: E402
+from tollgate.governance.runtime.openai_provider import OpenAIPricing, OpenAIResponsesProvider  # noqa: E402
 
 
 def verify_headroom() -> dict[str, object]:

@@ -3,8 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Protocol
 
-from context_ledger.governance.runtime.guardian import CallEnvelope, EnforcementResult, Guardian
-from context_ledger.governance.store.budget_reservations import BudgetReservations, Reservation
+from tollgate.governance.runtime.guardian import CallEnvelope, EnforcementResult, Guardian
+from tollgate.governance.store.budget_reservations import BudgetReservations, Reservation
 
 
 class ProviderClient(Protocol):

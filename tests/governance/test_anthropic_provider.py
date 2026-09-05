@@ -1,6 +1,6 @@
 from types import SimpleNamespace
 
-from context_ledger.governance.runtime.anthropic_provider import AnthropicMessagesProvider, AnthropicPricing
+from tollgate.governance.runtime.anthropic_provider import AnthropicMessagesProvider, AnthropicPricing
 
 
 def test_anthropic_messages_usage_and_cost_mapping():

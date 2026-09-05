@@ -265,7 +265,7 @@ def index_path(
 ) -> HybridIndex:
     """One call from a directory to a searchable index.
 
-    Pass a :class:`~context_ledger.context.store.Store` to reuse work across invocations;
+    Pass a :class:`~tollgate.context.store.Store` to reuse work across invocations;
     without one this stays a pure function that touches nothing but the source
     tree.
     """

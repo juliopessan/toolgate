@@ -7,20 +7,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
-from context_ledger.governance.runtime.guardian import CallEnvelope, Guardian, GuardianBlocked, TierPolicy  # noqa: E402
-from context_ledger.governance.store.waste_ledger import WasteLedger  # noqa: E402
-
-
-def approximate_tokens(text: str) -> int:
-    return max(1, (len(text) + 3) // 4)
-
-
-def conservative_compressor(payload: str, target_tokens: int) -> str:
-    target_chars = max(target_tokens * 4, 1)
-    if len(payload) <= target_chars:
-        return payload
-    # Runtime adapters should replace this with Headroom or an AST-aware profile.
-    return payload[:target_chars]
+from tollgate.context.tokens import estimate_tokens  # noqa: E402
+from tollgate.governance.runtime.compressors import ContextCompressor  # noqa: E402
+from tollgate.governance.runtime.guardian import CallEnvelope, Guardian, GuardianBlocked, TierPolicy  # noqa: E402
+from tollgate.governance.store.waste_ledger import WasteLedger  # noqa: E402
 
 
 def default_policies() -> dict[str, TierPolicy]:
@@ -36,17 +26,17 @@ def default_policies() -> dict[str, TierPolicy]:
 
 def main() -> int:
     request = json.load(sys.stdin)
-    db_path = Path(os.environ.get("AGENT_FINOPS_DB", "~/.agent-finops/telemetry.db")).expanduser()
+    db_path = Path(os.environ.get("TOLLGATE_DB", "~/.tollgate/telemetry.db")).expanduser()
     ledger = WasteLedger(db_path)
     ledger.migrate()
-    guardian = Guardian(ledger, default_policies(), approximate_tokens, conservative_compressor)
+    guardian = Guardian(ledger, default_policies(), estimate_tokens, ContextCompressor())
 
     envelope = CallEnvelope(
         session_id=str(request["session_id"]),
         project_id=str(request.get("project_id", "unknown")),
         artifact_id=str(request["artifact_id"]),
         payload=str(request.get("payload", "")),
-        candidate_tokens=int(request.get("candidate_tokens") or approximate_tokens(str(request.get("payload", "")))),
+        candidate_tokens=int(request.get("candidate_tokens") or estimate_tokens(str(request.get("payload", "")))),
         complexity_score=request.get("complexity_score"),
         tier=request.get("tier"),
         provider=str(request.get("provider", "unknown")),

@@ -22,14 +22,14 @@ from collections import defaultdict
 #: The report claims anyone on the team can re-run this; that is only true if it
 #: does not silently depend on being launched from the repo directory.
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, ROOT)
+sys.path.insert(0, os.path.join(ROOT, "src"))
 
 
 def repo(*parts: str) -> str:
     """Path inside the repository, independent of the working directory."""
     return os.path.join(ROOT, *parts)
 
-from tools_tokens import (  # noqa: E402
+from tollgate.context import (  # noqa: E402
     Headroom,
     Lane,
     estimate_tokens,
@@ -40,7 +40,7 @@ from tools_tokens import (  # noqa: E402
     skeleton,
     slice_symbol,
 )
-from tools_tokens.astx import detect_language  # noqa: E402
+from tollgate.context.astx import detect_language  # noqa: E402
 
 # Pricing assumption, stated openly so the report can label it as one.
 # Blended input rate for a frontier-class model, USD per million input tokens.
@@ -225,7 +225,7 @@ def measure_quality():
     for line in output.split("\n"):
         if line.startswith("Ran "):
             ran = int(line.split()[1])
-    src_lines = sum(len(read(p).splitlines()) for p in glob.glob(repo("tools_tokens", "*.py")))
+    src_lines = sum(len(read(p).splitlines()) for p in glob.glob(repo("src", "tollgate", "context", "*.py")))
     test_lines = sum(len(read(p).splitlines()) for p in glob.glob(repo("tests", "*.py")))
     return {
         "tests_total": ran,
@@ -236,7 +236,7 @@ def measure_quality():
         "test_lines": test_lines,
         "test_to_source_ratio": round(test_lines / src_lines, 2),
         "runtime_dependencies": 0,
-        "modules": len(glob.glob(repo("tools_tokens", "*.py"))),
+        "modules": len(glob.glob(repo("src", "tollgate", "context", "*.py"))),
     }
 
 
@@ -246,7 +246,7 @@ def main():
         if os.path.isdir(root):
             corpora[os.path.basename(os.path.dirname(root.rstrip("/"))) or root] = measure_corpus(root)
 
-    index = index_path(repo("tools_tokens"))
+    index = index_path(repo("src", "tollgate", "context"))
     metrics = {
         "generated_at": time.strftime("%Y-%m-%d %H:%M:%S UTC", time.gmtime()),
         "pricing_assumption_usd_per_mtok_input": USD_PER_MTOK_INPUT,
@@ -255,8 +255,8 @@ def main():
             index, "how does the allocator redistribute surplus from capped lanes", [200, 500, 1000, 2000, 4000, 8000]
         ),
         "retrieval": measure_retrieval(index),
-        "performance": measure_performance(repo("tools_tokens")),
-        "narrow_reads": measure_narrow_read(repo("tools_tokens")),
+        "performance": measure_performance(repo("src", "tollgate", "context")),
+        "narrow_reads": measure_narrow_read(repo("src", "tollgate", "context")),
         "quality": measure_quality(),
     }
 

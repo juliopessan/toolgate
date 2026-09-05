@@ -5,13 +5,18 @@ from pathlib import Path
 
 import pytest
 
-from context_ledger.governance.runtime.compressors import ASTAwareCompressor, ConservativeCompressor, FallbackCompressor
-from context_ledger.governance.runtime.policy_loader import load_tier_policies
-from context_ledger.governance.store.budget_reservations import BudgetReservations, ReservationRejected
+from tollgate.governance.runtime.compressors import (
+    ASTAwareCompressor,
+    ConservativeCompressor,
+    ContextCompressor,
+    FallbackCompressor,
+)
+from tollgate.governance.runtime.policy_loader import load_tier_policies
+from tollgate.governance.store.budget_reservations import BudgetReservations, ReservationRejected
 
 
 def test_policy_loader_reads_canonical_caps() -> None:
-    policies = load_tier_policies(Path("config/zwca-dispatch.yaml"))
+    policies = load_tier_policies(Path("config/tollgate-dispatch.yaml"))
     assert policies["horizon"].input_token_cap == 8000
     assert policies["aurora"].output_token_cap == 12000
 
@@ -22,6 +27,25 @@ def test_ast_compressor_reduces_comments() -> None:
     assert "comment" not in compressed
     assert "class A" in compressed
     assert "def run" in compressed
+
+
+def test_context_compressor_keeps_head_and_tail_within_budget() -> None:
+    lines = [f"line {i}" for i in range(500)]
+    payload = "\n".join(lines)
+
+    compressed = ContextCompressor().compress(payload, target_tokens=300)
+
+    from tollgate.context.tokens import estimate_tokens
+
+    assert estimate_tokens(compressed) <= 300
+    assert "line 0" in compressed
+    assert "line 499" in compressed
+    assert "elided" in compressed
+
+
+def test_context_compressor_is_a_guardian_compatible_callable() -> None:
+    compressor = ContextCompressor()
+    assert compressor("short payload", target_tokens=1000) == "short payload"
 
 
 def _reservation_db(tmp_path: Path) -> Path:
@@ -36,7 +60,7 @@ def _reservation_db(tmp_path: Path) -> Path:
             """
         )
         conn.execute("INSERT INTO zwca_sessions(session_id) VALUES ('s1')")
-        conn.executescript(Path("src/context_ledger/governance/store/migrations/003_budget_reservations.sql").read_text())
+        conn.executescript(Path("src/tollgate/governance/store/migrations/003_budget_reservations.sql").read_text())
     return db
 
 

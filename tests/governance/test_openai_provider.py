@@ -1,6 +1,6 @@
 from types import SimpleNamespace
 
-from context_ledger.governance.runtime.openai_provider import OpenAIPricing, OpenAIResponsesProvider
+from tollgate.governance.runtime.openai_provider import OpenAIPricing, OpenAIResponsesProvider
 
 
 class FakeResponses:
