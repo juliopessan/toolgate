@@ -32,12 +32,18 @@ dev = ["pytest>=9.1.1,<10.0.0", "mypy>=1.5", "ruff>=0.5"]
 tollgate = "tollgate.context.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/juliopessan/context-ledger"
-Source = "https://github.com/juliopessan/context-ledger"
+Homepage = "https://github.com/juliopessan/toolgate"
+Source = "https://github.com/juliopessan/toolgate"
 
 [tool.setuptools.packages.find]
 where = ["src"]
 include = ["tollgate*"]
+
+[tool.setuptools.package-data]
+tollgate = [
+  "governance/store/migrations/*.sql",
+  "governance/store/pricing.json",
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
