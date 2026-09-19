@@ -13,6 +13,7 @@ from tollgate.governance.runtime.compressors import (
 )
 from tollgate.governance.runtime.policy_loader import load_tier_policies
 from tollgate.governance.store.budget_reservations import BudgetReservations, ReservationRejected
+from tollgate.governance.store.waste_ledger import WasteLedger
 
 
 def test_policy_loader_reads_canonical_caps() -> None:
@@ -82,3 +83,18 @@ def test_fallback_compressor_is_callable() -> None:
         primary=ConservativeCompressor(), fallback=ConservativeCompressor()
     )
     assert compressor("abcdefgh", 1) == "abcd"
+
+
+def test_ledger_migrate_creates_budget_reservations_table(tmp_path):
+    db_path = tmp_path / "ledger.db"
+    WasteLedger(db_path).migrate()
+    reservations = BudgetReservations(db_path)
+    WasteLedger(db_path).ensure_session("s1", "p1", 10.0)
+    reservation = reservations.reserve(
+        session_id="s1",
+        artifact_id="a1",
+        estimated_cost_usd=1.0,
+        session_budget_usd=10.0,
+        artifact_budget_usd=None,
+    )
+    assert reservation.session_id == "s1"

@@ -48,9 +48,11 @@ class WasteLedger:
         return connection
 
     def migrate(self) -> None:
-        migration = Path(__file__).parent / "migrations" / "002_waste_ledger.sql"
+        migrations = Path(__file__).parent / "migrations"
         with self.connect() as connection:
-            connection.executescript(migration.read_text(encoding="utf-8"))
+            # 003 references tollgate_sessions from 002, so order matters.
+            for name in ("002_waste_ledger.sql", "003_budget_reservations.sql"):
+                connection.executescript((migrations / name).read_text(encoding="utf-8"))
 
     def ensure_session(self, session_id: str, project_id: str, budget_usd: float | None) -> None:
         now = datetime.now(timezone.utc).isoformat()
